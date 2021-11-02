@@ -1,0 +1,27 @@
+-isa=rxv2
+-fpu
+-include="C:\Program Files (x86)\Renesas\RX\2_1_0\include"
+-include="C:\Software3\PLMPLS_41\r_bsp"
+-include="C:\Software3\PLMPLS_41\r_config"
+-include="C:\Software3\PLMPLS_41\r_bsp\board\rskrx64m"
+-include="C:\Software3\PLMPLS_41\r_bsp\mcu"
+-include="C:\Software3\PLMPLS_41\r_bsp\mcu\rx64m"
+-include="C:\Software3\PLMPLS_41\r_bsp\mcu\rx64m\register_access"
+-include="C:\Software3\PLMPLS_41\r_flash_rx"
+-include="C:\Software3\PLMPLS_41\r_flash_rx\src"
+-include="C:\Software3\PLMPLS_41\r_flash_rx\src\targets"
+-include="C:\Software3\PLMPLS_41\r_flash_rx\src\non_fcu\rx100"
+-include="C:\Software3\PLMPLS_41\r_flash_rx\src\fcu"
+-include="C:\Software3\PLMPLS_41\src\cg_src"
+-include="C:\Software3\PLMPLS_41\src"
+-include="C:\Software3\PLMPLS_41\App"
+-include="C:\Software3\PLMPLS_41\USBStack"
+-include="C:\Software3\PLMPLS_41\USBStack\MSC" 
+-define=STRM_COM,CLW,__RX,DEBUGGR,MONITOR_APP_EN=1,PLM_HARDWARE,DDFB,STRM_NO
+-lang=c99
+-nomessage
+-output=obj
+-obj_path="src"
+-debug
+-optimize=0
+-nologo 

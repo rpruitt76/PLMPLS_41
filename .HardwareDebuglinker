@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ASCII"?>
+<com.renesas.linkersection.model:SectionContainer xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.renesas.linkersection.model="http:///LinkerSection.ecore">
+  <sections name="SU">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="4"/>
+  </sections>
+  <sections name="SI"/>
+  <sections name="B_1"/>
+  <sections name="R_1"/>
+  <sections name="B_2"/>
+  <sections name="R_2"/>
+  <sections name="B"/>
+  <sections name="R"/>
+  <sections name="RPFRAM"/>
+  <sections name="DATAFLASH">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="1048576"/>
+  </sections>
+  <sections name="DATAFLASH_1">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="1112064"/>
+  </sections>
+  <sections name="OPT_MEMORY">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="1179748"/>
+  </sections>
+  <sections name="PResetPRG">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="4290772992"/>
+  </sections>
+  <sections name="C_1"/>
+  <sections name="C_2"/>
+  <sections name="C"/>
+  <sections name="C$*"/>
+  <sections name="D*"/>
+  <sections name="W*"/>
+  <sections name="L"/>
+  <sections name="PIntPRG"/>
+  <sections name="P"/>
+  <sections name="PFRAM"/>
+  <sections name="EXCEPTVECT">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="4294967168"/>
+  </sections>
+  <sections name="RESETVECT">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="4294967292"/>
+    <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" name="RESETVECT"/>
+  </sections>
+</com.renesas.linkersection.model:SectionContainer>

@@ -1,0 +1,6 @@
+-isa=rxv2
+-fpu
+-lang=c99
+-head=runtime,ctype,math,mathf,stdarg,stdio,stdlib,string,ios,new,complex,cppstring,C99_complex,fenv,inttypes,wchar,wctype
+-output="PLM_CG_FIT_Flash.lib"
+-optimize=max
