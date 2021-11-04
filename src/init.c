@@ -19,6 +19,7 @@
 #include "r_cg_icu.h"
 #include "r_cg_tmr.h"
 #include "r_cg_mtu3.h"
+#include "gpio.h"
 
 //*****************************************************************************
 //*
@@ -356,6 +357,11 @@ void init_devices(void)
 		//TODO: Un-comment below when Sound Code is added.
 		//init_sound();
 
+	}
+	else
+	{
+		// Wait for 170msec....So that Reset can be held low to reset BeaconII
+		accurate_delay(170);
 	}
 
 	R_TMR0_Start(); //Start Timer 0
