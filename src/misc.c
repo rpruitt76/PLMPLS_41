@@ -94,6 +94,14 @@ void sleep_code(void)
 		mode = Locked_CONTINUE;
 	else
 		mode = Soft_PD_CONTINUE;					// After wakeup will need to process as reset restore.
+	// 0.1 Need to sleep the Beacon that may be sitting on oour console port...RP 10/7/2021
+	//Force Msgs
+	StrmOn = 1;
+	printf2("CMD:SD\n");
+    // Msgs normal.
+    StrmOn = 0;
+
+	// 0.2 NOW....Save Vars...
 	save_vars();  	 	  					    // Save Updated Variables.
 
 	// 1. Disable Timers.
