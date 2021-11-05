@@ -88,6 +88,7 @@ static char Save_Time[20];
 //*****************************************************************************
 void sleep_code(void)
 {
+	int x;
 	// 0. Save New Mode of
 	// If shutdown is because of locked, we need to wakeup in locked state.
 	if ( mode == Locked )
@@ -104,7 +105,13 @@ void sleep_code(void)
 	// Release Beacon II Reset and wait 200msec: EFR32_RESET = HIGH
 	PLMpls_gpio_On(EFR32_RESET);
 	// Wait to allow Beacon II to boot first....5 Seconds.
-	long_delay(5);
+	nobeep_flg = 1;				// Needed to enable sounds.....RP 11/5/2021
+	PwrDwn_Screen();			// Display Power Down Screen....RP 11/5/2021
+	for (x = 0; x < 5; x++) {
+		beep_tick();
+		long_delay(1);
+	}
+
 	//Force Msgs
 	StrmOn = 1;
 	printf2("CMD:SD\n");
@@ -3853,6 +3860,58 @@ void testPBFmonitor( char* parm1)
 
 	printf2("\n\n");
 }
+
+void setPBFmonitor( char* parm1)
+{
+	char tempstr[80];
+	int  tmpleaseDays;
+	int  tmpMode;
+
+	if (decodePBFcode(parm1, &tmpleaseDays, &tmpMode)) {
+		// Validate lease Days and tmpMode
+		if ((tmpleaseDays <= 90) && (tmpleaseDays >= 0)) {
+			if ((tmpMode <= 3) && (tmpMode >= 0)) {
+				// We have a good Code. Change modes and Lease Days.
+				opMode = tmpMode;
+				leaseDays = tmpleaseDays;
+				getDate(&leaseMnth, &leaseDay, &leaseYear);
+				// Write new values to Data Flash.
+				EEPROM_WRITE((uint32_t) &opMode, (uint32_t) &eopMode,
+						sizeof(opMode));	 		// Write opMode to Flash.
+				EEPROM_WRITE((uint32_t) &leaseDays, (uint32_t) &eleaseDays,
+						sizeof(leaseDays));	 	// Write leaseDays to Flash.
+				EEPROM_WRITE((uint32_t) &leaseDay, (uint32_t) &eleaseDay,
+						sizeof(leaseDay));	 		// Write leaseDay to Flash.
+				EEPROM_WRITE((uint32_t) &leaseMnth, (uint32_t) &eleaseMnth,
+						sizeof(leaseMnth));	 	// Write leaseMnth to Flash.
+				EEPROM_WRITE((uint32_t) &leaseYear, (uint32_t) &eleaseYear,
+						sizeof(leaseYear));	 	// Write leaseYear to Flash.
+				WDR(); //this prevents a timeout on enabling
+
+				// Show new Value.
+				printf2("*****************************************\n");
+				sprintf(tempstr,"SET PBF %s is GOOD!\n", parm1);
+				printf2(tempstr);
+
+				sprintf(tempstr,"Lease Days: %03d\n", tmpleaseDays);
+				printf2(tempstr);
+				sprintf(tempstr,"Mode: %1d\n", tmpMode);
+				printf2(tempstr);
+			} else {
+				// We have a bad code need to change mode to enter code again.
+			      printf2("ILLEGAL/Bad PBF Mode Parameter!!\n");
+			}
+		} else {
+			// We have a bad code need to change mode to enter code again.
+		      printf2("ILLEGAL/Bad PBF Lease Days Parameter!!\n");
+		}
+	} else {
+		// We have a bad code need to change mode to enter code again.
+	      printf2("ILLEGAL/Bad PBF Code!!\n");
+	}
+}
+
+
 
 void TestOriginmonitor( char* parm1)
 {

@@ -391,6 +391,10 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		testPBFmonitor( parm1 );
 	}
+	else if( strncmp(cmdString, "setPBF", 6) == 0)
+	{
+		setPBFmonitor( parm1 );
+	}
 	else if( strncmp(cmdString, "testO", 5) == 0)
 	{
 		TestOriginmonitor( parm1 );

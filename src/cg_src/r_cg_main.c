@@ -325,7 +325,11 @@ void main_plm(void)
   // Release Beacon II Reset and wait 200msec: EFR32_RESET = HIGH
   PLMpls_gpio_On(EFR32_RESET);
   // Wait to allow Beacon II to boot first....5 Seconds.
-  long_delay(5);
+  for (x=0; x<5; x++)
+  {
+	  beep_tick();
+	  long_delay(1);
+  }
 
   strcpy(Bat_Lvl, Battery_Test());
   if (tst_bat()) {
@@ -393,7 +397,7 @@ void main_plm(void)
     printf2("PLM Monitor Starting... \n\n");
     printf2("***************************************************************\n");
     printf2("PLM PLUS OS Version 4.02\n");
-    printf2("Copyright: Nov 4, 2021\n");
+    printf2("Copyright: Nov 5, 2021\n");
     printf2("Property of Cold Laser Therapeutics, LLC\n");
     printf2("***************************************************************\n\n\n");
 

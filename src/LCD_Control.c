@@ -2043,7 +2043,7 @@ void write_char(unsigned char var1)
 	  temp2[1] = 0x82;	//01000001 > 10000010
 	  temp2[2] = 0x82;	//01000001 > 10000010
 	  temp2[3] = 0x82;	//01000001 > 10000010
-	  temp2[4] = 0x3E;	//01111100 > 00111110
+	  temp2[4] = 0x7C;	//00111110 > 01111100
 	  temp2[5] = 0x00;	//00000000 > 00000000
 	  temp2[6] = 0x00; 	//00000000 > 00000000
 #endif
@@ -4252,7 +4252,25 @@ void LowBat_Screen(void)
 
   clear_screen();							// Clear Screen.
   set_cursor(LINE2, 0, NOCURSOR);
-  strcpy(tempstr, "   LOW BATTERY");
+  strcpy(tempstr, "  LOW BATTERY");
+  write_lcd(tempstr);
+}
+
+//*****************************************************************************
+//*
+//* routine: PwrDwn_Screen
+//* Date:    November 5, 2021
+//* Author:  Ralph Pruitt
+//* Display the Power Down LCD Screen.
+//*
+//*****************************************************************************
+void PwrDwn_Screen(void)
+{
+  char tempstr[18];
+
+  clear_screen();							// Clear Screen.
+  set_cursor(LINE2, 0, NOCURSOR);
+  strcpy(tempstr, " POWERING DOWN ");
   write_lcd(tempstr);
 }
 
