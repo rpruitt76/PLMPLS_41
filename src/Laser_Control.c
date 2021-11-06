@@ -760,7 +760,8 @@ void write_entry(unsigned int entry_num, struct laser_entry data1) {
 			temp1.laser3_time = data1.laser3_time;
 			temp1.laser4_time = data1.laser4_time;
 			for (x = 0; x < 9; x++) {
-				tempstr[x] = data1.string1[x + 3];
+//OLD				tempstr[x] = data1.string1[x + 3];
+				tempstr[x] = data1.string1[x];
 			}
 			tempstr[9] = 0;
 			strncpy(temp1.string1, tempstr, FREQ_STR_LEN+1);// add string to temp2 structure.

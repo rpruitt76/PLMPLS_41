@@ -3911,6 +3911,121 @@ void setPBFmonitor( char* parm1)
 	}
 }
 
+void setUPgmmonitor( char* parm1)
+{
+	char tempstr[80];
+	float laser1_time;
+	float laser2_time;
+	float laser3_time;
+	float laser4_time;
+	char string1[17];
+	uchar entry_flg;		// entry_flg.....Normally zero when String Blank
+	struct laser_entry Data_Entry;
+	int Numbr_Rcrds;
+	int Pgm_Numbr;
+	int strLength1;
+
+	sprintf(tempstr,"Input String:%s\n", parm1);
+	printf2(tempstr);
+	// Parse string to Find key parameters.
+	Numbr_Rcrds = sscanf(parm1, "%d,%40[^,],%f,%f,%f,%f", &Pgm_Numbr,
+			tempstr,
+			&laser1_time,
+			&laser2_time,
+			&laser3_time,
+			&laser4_time);
+	// Did we get 6 Items?
+	if (Numbr_Rcrds == 6)
+	{
+		strLength1 = strlen(tempstr);
+		// Yes...Continue....
+		// Is string less than 17 Chars?
+		if (strLength1<10)
+		{
+			// Yes...Continue....
+			// Verify if PGM Number is correct range....
+			if ((Pgm_Numbr > CUSTOM4_END) && (Pgm_Numbr <= USER_END)) {
+				if (Pgm_Numbr <= USER_REND) {
+					// YES...Continue....
+					strcpy(string1, tempstr);
+					sprintf(tempstr, "  Program Number: %d\n", Pgm_Numbr);
+					printf2(tempstr);
+					sprintf(tempstr, "  String: %s\n", string1);
+					printf2(tempstr);
+					sprintf(tempstr, "  Laser Value 1:%f\n", laser1_time);
+					printf2(tempstr);
+					sprintf(tempstr, "  Laser Value 2:%f\n", laser2_time);
+					printf2(tempstr);
+					sprintf(tempstr, "  Laser Value 3:%f\n", laser3_time);
+					printf2(tempstr);
+					sprintf(tempstr, "  Laser Value 4:%f\n", laser4_time);
+					printf2(tempstr);
+					// Test for NULL to determine state for entry_flg
+					if( strncmp(string1, "NULL", 2) == 0)
+						entry_flg = 0;
+					else
+						entry_flg = 1;
+					// Load Entry Structure.
+					Data_Entry.entry_flg = entry_flg;
+					strcpy(Data_Entry.string1, string1);
+					Data_Entry.laser1_time = laser1_time;
+					Data_Entry.laser2_time = laser2_time;
+					Data_Entry.laser3_time = laser3_time;
+					Data_Entry.laser4_time = laser4_time;
+					// Write Entry.
+					write_entry(Pgm_Numbr, Data_Entry);  	 		// Write New Entry.
+				}
+				else
+				{
+					// NO...Error...
+					sprintf(tempstr,"ILLEGAL/PGM Range Error! PGM:%d\n", Pgm_Numbr);
+					printf2(tempstr);
+				}
+			}
+			else
+			{
+				// NO...Error...
+				sprintf(tempstr,"ILLEGAL/PGM Range Error! PGM:%d\n", Pgm_Numbr);
+				printf2(tempstr);
+			}
+		}
+		else
+		{
+			// NO...Error...
+			sprintf(tempstr,"ILLEGAL/String too long! Length:%d\n", strLength1);
+			printf2(tempstr);
+		}
+	}
+	else
+	{
+		// NO...Error...
+		sprintf(tempstr,"ILLEGAL/Wrong Number Parms. Items:%d\n", Numbr_Rcrds);
+		printf2(tempstr);
+	}
+
+/*
+	// Test string and determine if it is a good PBF.
+	if (decodePBFcode( parm1, &tmpleaseDays, &tmpMode))
+	{
+		// Show new Value.
+		printf2("*****************************************\n");
+		sprintf(tempstr,"BOB %s is GOOD!\n", parm1);
+		printf2(tempstr);
+
+		sprintf(tempstr,"Lease Days: %03d\n", tmpleaseDays);
+		printf2(tempstr);
+		sprintf(tempstr,"Mode: %1d\n", tmpMode);
+		printf2(tempstr);
+	}
+	else
+	{
+	      printf2("ILLEGAL/Bad PBF Parameter!!\n");
+	}
+
+	printf2("\n\n");
+	*/
+}
+
 
 
 void TestOriginmonitor( char* parm1)
