@@ -3225,9 +3225,10 @@ void main_plm(void)
 			    break;
 
 			  case LASER:
-	  			if (((prog_num >= USER_STRT) && (prog_num <= USER_REND)) ||
+	  			if ((((prog_num >= USER_STRT) && (prog_num <= USER_REND)) ||
 	  					((prog_num >= SWEEP_STRT) && (prog_num <= SWEEP_REND)) ||
-	  					((prog_num >= USERSUPR_STRT) && (prog_num <= USERSUPR_REND))) {
+	  					((prog_num >= USERSUPR_STRT) && (prog_num <= USERSUPR_REND))) &&
+						(data1->entry_flg == 0)) {
 	  				if (prog_num > PROG_NUMBR)
 					    prog_num = PROG_NUMBR;
 			        sprintf(Prog_str,"%d",prog_num);
@@ -4843,10 +4844,12 @@ void main_plm(void)
 #endif
             if (prog_num <= USER_REND) {
 			  once = 1;								// Set Once Flag.
+			  strcpy(data2.string1, "");
 			  data2.laser1_time = 0;
 			  data2.laser2_time = 0;
 			  data2.laser3_time = 0;
 			  data2.laser4_time = 0;
+			  data2.entry_flg = 0;
 			  write_entry(prog_num, data2);  	 		// Write New Entry.
             }
           }

@@ -3496,6 +3496,9 @@ void remain_screen(void)
     strcpy(tempstr, "                ");
 	write_lcd(tempstr);
     set_cursor(LINE3, 0, NOCURSOR);
+    strcpy(tempstr, "                ");
+	write_lcd(tempstr);
+    set_cursor(LINE3, 0, NOCURSOR);
     strcpy(tempstr, data1->string1);
 	write_lcd(tempstr);
   }
