@@ -2855,7 +2855,7 @@ void PBFEntryScrn(void)
   write_lcd(tempstr);
 
   set_cursor(LINE4, 0, NOCURSOR);
-  strcpy(tempstr, "  866-694-6116  ");
+  strcpy(tempstr, "  303-570-3206  ");
   write_lcd(tempstr);
   printf2("\n***************************************************************\n\n\n");
 }

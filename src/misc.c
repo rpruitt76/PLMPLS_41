@@ -4002,31 +4002,7 @@ void setUPgmmonitor( char* parm1)
 		sprintf(tempstr,"ILLEGAL/Wrong Number Parms. Items:%d\n", Numbr_Rcrds);
 		printf2(tempstr);
 	}
-
-/*
-	// Test string and determine if it is a good PBF.
-	if (decodePBFcode( parm1, &tmpleaseDays, &tmpMode))
-	{
-		// Show new Value.
-		printf2("*****************************************\n");
-		sprintf(tempstr,"BOB %s is GOOD!\n", parm1);
-		printf2(tempstr);
-
-		sprintf(tempstr,"Lease Days: %03d\n", tmpleaseDays);
-		printf2(tempstr);
-		sprintf(tempstr,"Mode: %1d\n", tmpMode);
-		printf2(tempstr);
-	}
-	else
-	{
-	      printf2("ILLEGAL/Bad PBF Parameter!!\n");
-	}
-
-	printf2("\n\n");
-	*/
 }
-
-
 
 void TestOriginmonitor( char* parm1)
 {
