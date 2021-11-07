@@ -1230,7 +1230,7 @@
 
 //Protocol 103
 //..........................    "1234567890123456"				// String Template.
-#define  PROG103_STRING		"    Knee's      "				// Program 3 Display String.
+#define  PROG103_STRING		"    Knees       "				// Program 3 Display String.
 #define  PROG103_1			3000000000.0		 	 		// Laser 1 for Professional Protocol
 #define  PROG103_2			2799999999.0		 	 		// Laser 2 for Professional Protocol
 #define  PROG103_3			3000000000.0	 		 		// Laser 3 for Professional Protocol
@@ -1914,7 +1914,7 @@
 
 //Protocol 160
 //..........................    "1234567890123456"				// String Template.
-#define  PROG160_STRING		"     Pineal      "				// Program Display String.
+#define  PROG160_STRING		"     Pineal     "				// Program Display String.
 #define  PROG160_1			3000000000.0	 	 			// Laser 1 for Professional Protocol
 #define  PROG160_2			2963000000.0	 	 		 	// Laser 2 for Professional Protocol
 #define  PROG160_3			3000000000.0	 	 			// Laser 1 for Professional Protocol
@@ -2214,7 +2214,7 @@
 
 //Protocol 185
 //..........................    "1234567890123456"				// String Template.
-#define  PROG185_STRING		"    Sinus's     "				// Program Display String.
+#define  PROG185_STRING		"    Sinuses     "				// Program Display String.
 #define  PROG185_1			999999999.0	 	 			// Laser 1 for Professional Protocol
 #define  PROG185_2			2000000000.0	 	 		 	// Laser 2 for Professional Protocol
 #define  PROG185_3			3000000000.0	 	 			// Laser 1 for Professional Protocol
@@ -4986,7 +4986,7 @@
 
 //Protocol 416
 //..........................    "1234567890123456"				// String Template.
-#define  PROG416_STRING		"       EMF'S    "				// Program Display String.
+#define  PROG416_STRING		"       EMFs     "				// Program Display String.
 #define  PROG416_1			3000000000.0	 	 			// Laser 1 for Professional Protocol
 #define  PROG416_2			2779999999.0	 	 			// Laser 2 for Professional Protocol
 #define  PROG416_3			3000000000.0	 	 			// Laser 1 for Professional Protocol
@@ -5070,7 +5070,7 @@
 
 //Protocol 423
 //..........................    "1234567890123456"				// String Template.
-#define  PROG423_STRING		"      GMO's     "				// Program Display String.
+#define  PROG423_STRING		"       GMOs     "				// Program Display String.
 #define  PROG423_1			3000000000.0	 	 			// Laser 1 for Professional Protocol
 #define  PROG423_2			2393000000.0	 	 			// Laser 2 for Professional Protocol
 #define  PROG423_3			3000000000.0	 	 			// Laser 3 for Professional Protocol
@@ -5178,7 +5178,7 @@
 
 //Protocol 432
 //..........................    "1234567890123456"				// String Template.
-#define  PROG432_STRING		"   Megamoy's    "				// Program Display String.
+#define  PROG432_STRING		"    Megamoys    "				// Program Display String.
 #define  PROG432_1			3000000000.0	 	 			// Laser 1 for Professional Protocol
 #define  PROG432_2			3000000000.0	 	 			// Laser 2 for Professional Protocol
 #define  PROG432_3			3000000000.0	 	 			// Laser 3 for Professional Protocol
