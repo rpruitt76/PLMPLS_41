@@ -5201,6 +5201,8 @@ void main_plm(void)
 	    two_minute--;
       if(five_minute > 0)
 	    five_minute--;
+      if(var_timer > 0)
+    	  var_timer--;
 	  if(cnt_dwn_flg > 0) {
 	    d_tick++;
 		if (d_tick >= 2) {

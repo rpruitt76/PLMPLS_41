@@ -196,6 +196,10 @@ extern void five_sec_clear(void);			   // Clear five Second Timer
 extern void two_min_start(void);			   // Start or re-start 2 Minute Timer.
 extern unsigned char two_min_test(void);	   // Test Two Minute Timer.
 extern void two_min_clear(void);			   // Clear Two Minute Timer.
+extern void Timout_start(void);					// Start or re-start Timeout Timer.
+extern void Timeout_clear(void);				// Test Timeout Timer.
+extern unsigned char Timeout_test(void);		// Clear Timeout Timer.
+extern unsigned char Timeout_active(void);
 extern void five_min_start(void);			   // Start or re-start 2 Minute Timer.
 extern unsigned char five_min_test(void);	   // Test Two Minute Timer.
 extern void five_min_clear(void);			   // Clear Two Minute Timer.
