@@ -58,6 +58,9 @@
 		 int				leaseMnth;				// Lock Down Lease Month
 		 int				leaseYear;				// Lock Down Lease Year.
 
+		 unsigned int		var_timer;				// Timer to be used for shutdown timeout.
+		 unsigned int		timeout_Value;			// Timeout Value used to be saved and restored.
+
 		 unsigned char		buf[TASKBUFF];	 // Defines Tasking Buffer
 		 unsigned char		buf_in;			 // Buffer Input Pointer
 		 unsigned char		buf_out;		 // Buffer Output Pointer
@@ -186,6 +189,9 @@
   		const int				eleaseDay = 1; 	  			 // Lock Down Lease Day of Month
   		const int				eleaseMnth = 1;	  			 // Lock Down Lease Month
   		const int				eleaseYear = 2015; 		 	 // Lock Down Lease Year.
+
+  		const unsigned int		etimeout_Value = 240;		 // Timeout Value used to be saved and restored.
+
   		const unsigned char 		etimer_low = 125;		 	 // Timer 2 Count Saved.
   		const unsigned char 		eprescale = 2;			 	 // Timer 2 Prescale.
   		const unsigned char 		etimer_low2 = 125;		 	 // Timer 2 Count Saved.
