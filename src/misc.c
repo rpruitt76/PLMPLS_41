@@ -3095,6 +3095,73 @@ unsigned char two_min_test(void)
 
 //*****************************************************************************
 //*
+//* routine: Timout_start
+//* Date: 	 January 19, 2022
+//* Author:  Ralph Pruitt
+//* This routine starts or restarts the Timeout timer.
+//*
+//*****************************************************************************
+void Timout_start(void)
+{
+	var_timer = timeout_Value;			// Initialize Timeout Timer.
+	ticker = 0;  						// Sync Timer for countDown.
+}
+
+//*****************************************************************************
+//*
+//* routine: Timeout_clear
+//* Date: 	 January 19, 2022
+//* Author:  Ralph Pruitt
+//* This routine clears the two minute timer.
+//*
+//*****************************************************************************
+void Timeout_clear(void)
+{
+	var_timer = 0;			// Clear the Timeout Timer.
+}
+
+//*****************************************************************************
+//*
+//* routine: Timeout_test
+//* Date: 	 January 19, 2022
+//* Author:  Ralph Pruitt
+//* This routine tests the Timeout timer and returns status.
+//*
+//* Returns:
+//*				1:		Timer still Active.
+//*			    0:      Timer Clear.
+//*
+//*****************************************************************************
+unsigned char Timeout_test(void)
+{
+	if (var_timer > 0)
+		return (1);
+	else
+		return (0);
+}
+
+//*****************************************************************************
+//*
+//* routine: Timeout_active
+//* Date: 	 January 19, 2022
+//* Author:  Ralph Pruitt
+//* This routine tests the Timeout_active and returns status.
+//*
+//* Returns:
+//*				1:		Timeout Active.
+//*			    0:      Timeout Not Active
+//*
+//*****************************************************************************
+unsigned char Timeout_active(void)
+{
+	if (timeout_Value > 0)
+		return (1);
+	else
+		return (0);
+}
+
+//*****************************************************************************
+//*
 //* routine: five_min_start
 //* Date: 	 January 1, 2004
 //* Author:  Ralph Pruitt
