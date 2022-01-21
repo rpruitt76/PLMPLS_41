@@ -606,6 +606,9 @@ extern const int			eleaseDay; 	  			// Lock Down Lease Day of Month
 extern const int			eleaseMnth;	  			// Lock Down Lease Month
 extern const int			eleaseYear; 			// Lock Down Lease Year.
 
+extern unsigned int			var_timer;				// Timer to be used for shutdown timeout.
+extern unsigned int			timeout_Value;			// Timeout Value used to be saved and restored.
+extern const unsigned int	etimeout_Value;			// Timeout Value used to be saved and restored.
 
 //EEPROM Variable Definitions
 //extern const struct laseru_entry laserStart_data[];

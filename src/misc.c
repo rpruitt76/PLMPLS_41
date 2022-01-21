@@ -2813,6 +2813,10 @@ void save_vars(void)
 	EEPROM_WRITE((uint32_t)&leaseYear, (uint32_t)&eleaseYear, sizeof(leaseYear));	 	// Write leaseYear to Flash.
 	WDR(); //this prevents a timout on enabling
 
+	// Write Timeout Value Var
+	EEPROM_WRITE((uint32_t)&timeout_Value, (uint32_t)&etimeout_Value, sizeof(timeout_Value));	// Write timeout_Value to Flash.
+	WDR(); //this prevents a timout on enabling
+
 	if (tmr_update_flg == 0) {
 
 		EEPROM_WRITE((uint32_t)&tmr_min, (uint32_t)&etmr_min, sizeof(tmr_min));	 // Write the data to EEPROM.
@@ -2885,6 +2889,9 @@ void restore_vars(void)
 	leaseMnth = eleaseMnth;						 	// Write leaseMnth to Flash.
 	leaseYear = eleaseYear;	 						// Write leaseYear to Flash.
 	WDR(); 											//this prevents a timeout on enabling
+
+	// Read Timeout Value
+	timeout_Value = etimeout_Value;					// Read Timeout Value from flash.
 
 //  if ((cnt_dwn_flg == 0) && (tmr_update_flg == 0)) {
   	if (cnt_dwn_flg == 0)
