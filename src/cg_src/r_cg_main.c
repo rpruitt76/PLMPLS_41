@@ -653,7 +653,7 @@ void main_plm(void)
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
 		}
-		if ((two_min_test() == 0) ||
+		if (((Timeout_test() == 0) && Timeout_active()) ||
 				(mode == LOW_BAT)) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if (mode == LOW_BAT)
@@ -749,7 +749,7 @@ void main_plm(void)
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
 		}
-		if ((two_min_test() == 0) ||
+		if (((Timeout_test() == 0) && Timeout_active()) ||
 				(mode == LOW_BAT)) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if (mode == LOW_BAT)
@@ -845,7 +845,7 @@ void main_plm(void)
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
 		}
-		if ((two_min_test() == 0) ||
+		if (((Timeout_test() == 0) && Timeout_active()) ||
 				(mode == LOW_BAT)) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if (mode == LOW_BAT)
@@ -927,7 +927,7 @@ void main_plm(void)
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
 		}
-		if ((two_min_test() == 0) ||
+		if (((Timeout_test() == 0) && Timeout_active()) ||
 				(mode == LOW_BAT)) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if (mode == LOW_BAT)
@@ -1042,7 +1042,7 @@ void main_plm(void)
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
 		}
-		if ((two_min_test() == 0) ||
+		if (((Timeout_test() == 0) && Timeout_active()) ||
 				(mode == LOW_BAT)) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if (mode == LOW_BAT)
@@ -1090,7 +1090,7 @@ void main_plm(void)
 			laser_hold = 1;						// Clear laser_hold var.
 			nobeep_flg = 0;					    // Turn Off Beep.
 		}
-		if (two_min_test() == 0) {
+		if ((Timeout_test() == 0) && Timeout_active()) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			mode = Main; 	  					// Set Mode to Main.
 			once = 0;								// Reset once flag.
@@ -1149,7 +1149,7 @@ void main_plm(void)
 			beep_3Bp();							// Beep Start Screen
 			MonitorTask();						// Slave to monitor
 		}
-		if (two_min_test() == 0) {
+		if ((Timeout_test() == 0) && Timeout_active()) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			mode = Main; 	  					// Set Mode to Main.
 			once = 0;								// Reset once flag.
@@ -1204,7 +1204,7 @@ void main_plm(void)
 		laser_hold = 0;						// Clear laser_hold var.
 		beep_3Bp();							// Beep Start Screen
 	  }
-	  if ((two_min_test() == 0) ||
+	  if (((Timeout_test() == 0) && Timeout_active()) ||
 			  (mode == LOW_BAT)) {
 		  nobeep_flg = 1;					    // Turn On Beep.
 		  if (mode == LOW_BAT)
@@ -1586,7 +1586,7 @@ void main_plm(void)
 		  once = 1;								// Set Once Flag.
 		  laser_hold = 0;						// Clear laser_hold var.
 	  }
-	  if ((two_min_test() == 0) ||
+	  if (((Timeout_test() == 0) && Timeout_active()) ||
 			  (mode == LOW_BAT)) {
 		  nobeep_flg = 1;					    // Turn On Beep.
 		  if (mode == LOW_BAT)
@@ -1848,7 +1848,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if ((two_min_test() == 0)  || (mode == LOW_BAT)) {
+	    if (((Timeout_test() == 0) && Timeout_active())  || (mode == LOW_BAT)) {
 	    	nobeep_flg = 1;					    // Turn On Beep.
 		    if (mode != LOW_BAT)
 				mode = Soft_PD; 	  				// Set Mode to Soft_PD.
@@ -1992,7 +1992,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if ((two_min_test() == 0) ||
+	    if (((Timeout_test() == 0) && Timeout_active()) ||
 	    		(mode == LOW_BAT))
 	    {
 	    	nobeep_flg = 1;					    // Turn On Beep.
@@ -2043,7 +2043,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if ((two_min_test() == 0) ||
+	    if (((Timeout_test() == 0) && Timeout_active()) ||
 	    		(mode == LOW_BAT))
 	    {
 	    	nobeep_flg = 1;					    // Turn On Beep.
@@ -2294,7 +2294,7 @@ void main_plm(void)
 		  }
 		  else
 			  printf2(".");
-		  if ((two_min_test() == 0) ||
+		  if (((Timeout_test() == 0) && Timeout_active()) ||
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
@@ -2345,7 +2345,7 @@ void main_plm(void)
 		  }
 		  else
 			  printf2(".");
-		  if ((two_min_test() == 0) ||
+		  if (((Timeout_test() == 0) && Timeout_active()) ||
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
@@ -2417,7 +2417,7 @@ void main_plm(void)
 		  }
 		  else
 			  printf2(".");
-		  if ((two_min_test() == 0) ||
+		  if (((Timeout_test() == 0) && Timeout_active()) ||
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
@@ -2468,7 +2468,7 @@ void main_plm(void)
 		  }
 		  else
 			  printf2(".");
-		  if ((two_min_test() == 0) ||
+		  if (((Timeout_test() == 0) && Timeout_active()) ||
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
@@ -2737,7 +2737,7 @@ void main_plm(void)
 		  mode = Pause_Laser2;					// Set New Mode.
 		  once = 0;								// Reset once flag.
 		}
-		else if (two_min_test() == 0) {
+		else if ((Timeout_test() == 0) && Timeout_active()) {
 		  nobeep_flg = 1;					    // Turn On Beep Till mode determined.
 		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  mode = Soft_PD;							// Set New Mode.
@@ -2790,7 +2790,7 @@ void main_plm(void)
 		    once = 0;								// Reset once flag.
 	      }
 		}
-		else if (two_min_test() == 0) {
+		else if ((Timeout_test() == 0) && Timeout_active()) {
 		  nobeep_flg = 1;					    // Turn On Beep Till mode determined.
 		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  mode = Soft_PD;							// Set New Mode.
@@ -2957,7 +2957,7 @@ void main_plm(void)
 		  mode = Main;							// Set New Mode.
 		  once = 0;								// Reset once flag.
 		}
-		else if (two_min_test() == 0) {
+		else if ((Timeout_test() == 0) && Timeout_active()) {
 		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  mode = Soft_PD;							// Set New Mode.
 		  once = 0;									// Reset once flag.
@@ -2994,7 +2994,7 @@ void main_plm(void)
 		    once = 0;								// Reset once flag.
 	      }
 		}
-		else if (two_min_test() == 0) {
+		else if ((Timeout_test() == 0) && Timeout_active()) {
 		  mode = Soft_PD;							// Set New Mode.
 		  once = 0;									// Reset once flag.
 		}
@@ -3050,7 +3050,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if (two_min_test() == 0) {
+	    if ((Timeout_test() == 0) && Timeout_active()) {
 	      nobeep_flg = 1;					    // Turn On Beep.
 		  prog_num = save_prog;					// Restore prog_num.
 		  mode = Soft_PD; 	  					// Set Mode to Soft_PD.
@@ -3570,7 +3570,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if (two_min_test() == 0) {
+	    if ((Timeout_test() == 0) && Timeout_active()) {
 	      nobeep_flg = 1;					    // Turn On Beep.
 		  tmr_update_flg = 0;					// Re-activate Updates to timers.
 		  mode = Soft_PD; 	  					// Set Mode to Soft_PD.
@@ -3947,7 +3947,7 @@ void main_plm(void)
 		}
 	    else
 		  printf2(".");
-	    if (two_min_test() == 0) {
+	    if ((Timeout_test() == 0) && Timeout_active()) {
 	      nobeep_flg = 1;					    // Turn On Beep.
 		  lsr_update_flg = 0;					// Re-activate Updates to timers.
  		  alsr_update_flg = 0;		 			// Clear Flag/ Canceled.
@@ -4722,7 +4722,7 @@ void main_plm(void)
 	    else
 		  printf2(".");
 		key_var = scan_keyboard();				// Scan Keyboard.
-	    if (two_min_test() == 0) {
+	    if ((Timeout_test() == 0) && Timeout_active()) {
 		  mode = Soft_PD; 	  					// Set Mode to Soft_PD.
 		  once = 0;								// Reset once flag.
 		} // End If Test two_min_test Failed
@@ -4774,7 +4774,7 @@ void main_plm(void)
 	    else
 		  printf2(".");
 		key_var = scan_keyboard();				// Scan Keyboard.
-	    if (two_min_test() == 0) {
+	    if ((Timeout_test() == 0) && Timeout_active()) {
 	      nobeep_flg = 1;					    // Turn On Beep.
 		  mode = Soft_PD; 	  					// Set Mode to Soft_PD.
 		  once = 0;								// Reset once flag.
