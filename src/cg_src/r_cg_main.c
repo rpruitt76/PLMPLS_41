@@ -648,7 +648,8 @@ void main_plm(void)
 #endif
             strcpy(lease_str, "            ");			// Copy a Blank string to lease_str.
             DateEntryScrn();							// Display Sound Config Screen.
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
@@ -719,7 +720,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -744,7 +746,8 @@ void main_plm(void)
 #endif
             strcpy(lease_str, "            ");			// Copy a Blank string to lease_str.
             TimeEntryScrn();							// Display Sound Config Screen.
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
@@ -815,7 +818,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -840,7 +844,8 @@ void main_plm(void)
 #endif
             strcpy(lease_str, "            ");			// Copy a Blank string to lease_str.
 			SerialNumScrn();							// Display Sound Config Screen.
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
@@ -906,7 +911,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -922,7 +928,8 @@ void main_plm(void)
 			nobeep_flg = 1;					    // Turn On Beep.
             strcpy(lease_str, "            ");			// Copy a Blank string to lease_str.
             PBFEntryScrn();							// Display Sound Config Screen.
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
@@ -1022,7 +1029,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -1037,7 +1045,8 @@ void main_plm(void)
 		if (once == 0) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			PBFErrorScrn(1);					// Display Sound Config Screen.
-			two_min_start();					// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;							// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			beep_3Bp();							// Beep Start Screen
@@ -1085,7 +1094,8 @@ void main_plm(void)
 		if (once == 0) {
 			TimeScrn();							// Display Sound Config Screen.
 			accurate_delay( 200 );				// Delay 200 msec
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 1;						// Clear laser_hold var.
 			nobeep_flg = 0;					    // Turn Off Beep.
@@ -1126,7 +1136,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -1142,7 +1153,8 @@ void main_plm(void)
 		monPrint("MNTR", "MonitorMode");		// Send Status Message
 		if (once == 0) {
 			MonitorScrn();							// Display Sound Config Screen.
-			two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 			once = 1;								// Set Once Flag.
 			laser_hold = 0;						// Clear laser_hold var.
 			nobeep_flg = 1;					    // Turn On Beep.
@@ -1181,7 +1193,8 @@ void main_plm(void)
 					two_min_clear();				   // Clear 5 MInute Timer.
 				}
 				else
-					two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			} //Endif Key Founr
 		} // End If two_min_test active
 		break;
@@ -1199,7 +1212,8 @@ void main_plm(void)
 //	    init_lcd2();						    // Initialize the LCD Screen.
 #endif
 		KeyEntryScrn();							// Display Sound Config Screen.
-		two_min_start();						// Two Minute Timer Start.
+		if(Timeout_active())
+			Timout_start();					// TimeOut Timer Start.
 		once = 1;								// Set Once Flag.
 		laser_hold = 0;						// Clear laser_hold var.
 		beep_3Bp();							// Beep Start Screen
@@ -1289,7 +1303,8 @@ void main_plm(void)
 				  two_min_clear();				   // Clear 5 MInute Timer.
 			  }
 			  else
-				  two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 		  } //Endif Key Founr
 	  } // End If two_min_test active
 	  break;
@@ -1582,7 +1597,8 @@ void main_plm(void)
 //		  init_lcd2();						    // Initialize the LCD Screen.
 #endif
 		  snd_screen();							// Display Sound Config Screen.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		  laser_hold = 0;						// Clear laser_hold var.
 	  }
@@ -1606,7 +1622,8 @@ void main_plm(void)
 			  nobeep_flg = 0;					    // Turn Off Beep Till mode determined.
 			  switch (key_var) {
 			    case LASER:
-			    	two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 			    	SndCnfig++;						// Increment Sound Var.
 			    	if (SndCnfig>=MAX_SNDS)
 			    		SndCnfig = 0;		  			// If past limit, reset to zero.
@@ -1625,7 +1642,8 @@ void main_plm(void)
 				  two_min_clear();				   // Clear 5 MInute Timer.
 			  }
 			  else
-				  two_min_start();				   // Restart Two Minute Timer.
+					if(Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
 		  } //
 	  } // End If two_min_test active
 	  break;
@@ -1841,7 +1859,8 @@ void main_plm(void)
 			  monPrint("PROG", temp_String);		// temp_String
 		  }
 		  remain_screen();						// Display Main Screen.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		  Booted = 1;							// We are now Booted.
 		  laser_hold = 0;						// Clear laser_hold var.
@@ -1947,7 +1966,8 @@ void main_plm(void)
 			  two_min_clear();				   // Clear 5 MInute Timer.
 			}
 			else
-			  two_min_start();				   // Restart Two Minute Timer.
+				if(Timeout_active())
+					Timout_start();					// TimeOut Timer Start.
 		  } //Endif Key Founr
 		} // End If two_min_test active
 	    break;
@@ -1987,7 +2007,8 @@ void main_plm(void)
 	      //monPrint("PROG_STR", Ptr1);		// Send Status Message
 		  TL_Armed_screen();					// Print Timed Laser Armed Screen
 		  beep_3Bp();							// Beep Three Times and wait for start.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -2289,7 +2310,8 @@ void main_plm(void)
 		      //monPrint("PROG_STR", Ptr1);		// Send Status Message
 			  Laser_Armed_screen();					// Print Timed Laser Armed Screen
 			  beep_3Bp();							// Beep Three Times and wait for start.
-			  two_min_start();						// Two Minute Timer Start.
+				if(Timeout_active())
+					Timout_start();					// TimeOut Timer Start.
 			  once = 1;								// Set Once Flag.
 		  }
 		  else
@@ -2412,7 +2434,8 @@ void main_plm(void)
 			  nobeep_flg = 1;					    // Turn On Beep.
 			  beep_3Bp();							// Beep Three Times and wait for start.
 			  nobeep_flg = 0;					    // Turn Off Beep.
-			  two_min_start();						// Two Minute Timer Start.
+				if(Timeout_active())
+					Timout_start();					// TimeOut Timer Start.
 			  once = 1;								// Set Once Flag.
 		  }
 		  else
@@ -2727,7 +2750,8 @@ void main_plm(void)
 	    if (once == 0) {
 		  printf2("*** Pause_Laser ***\n");
 		  monPrint("MNTR", "Pause_Laser");		// Send Status Message
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -2754,7 +2778,8 @@ void main_plm(void)
 	  case Pause_Laser2:						// Pause_Laser2.
 	    if (once == 0) {
 		  printf2("*** Pause_Laser2 ***\n");
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -2946,7 +2971,8 @@ void main_plm(void)
 	  case Pause1:								// Pause1.
 	    if (once == 0) {
 		  printf2("*** Pause1 ***\n");
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -2973,7 +2999,8 @@ void main_plm(void)
 /*	  case Pause:								// Pause.
 	    if (once == 0) {
 		  printf2("*** Pause ***\n");
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -3045,7 +3072,8 @@ void main_plm(void)
 		  save_prog = prog_num;					// Save Program Number..If canceled.
 		  laser_hold = 0;						// Clear laser_hold var.
 		  update_num = 0;						// Clear update_num var.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -3352,7 +3380,8 @@ void main_plm(void)
 				mode = Build_Prog;			// Set New Mode.
 			    break;
 			} // End Switch on key_var
-			two_min_start();				   // Restart Two Minute Timer.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  } //Endif Key Found
 		} // End If two_min_test active
 	    break;
@@ -3563,7 +3592,8 @@ void main_plm(void)
 		  laser_hold = 0;						// Clear laser_hold var.
 		  tmr_update_flg = 1;					// Deactivate Updates to timers.
 		  update_num = 0;						// Clear update_num var.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		  sav_sec = tmr_sec;					// Save Timer Seconds.
 		  sav_min = tmr_min;					// Save Timer Minutes.
@@ -3684,7 +3714,8 @@ void main_plm(void)
 			    break;
 
 			} // End Switch on key_var
-			two_min_start();				   // Restart Two Minute Timer.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  } //Endif Key Found
 		} // End If two_min_test active
 	    break;
@@ -3941,7 +3972,8 @@ void main_plm(void)
 		  sav_laser3 = laser3_disp;				// Save Laser3.
 		  sav_laser4 = laser4_disp;				// Save Laser4.
 		  update_num = 0;						// Clear update_num var.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  laser_hold = 0;						// Clear laser_hold var.
 		  once = 1;								// Set Once Flag.
 		}
@@ -4409,7 +4441,8 @@ void main_plm(void)
 			    break;
 
 			} // End Switch on key_var
-			two_min_start();				   // Restart Two Minute Timer.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  } //Endif Key Found
 		} // End If two_min_test active
 	    break;
@@ -4601,7 +4634,8 @@ void main_plm(void)
 		key_var = scan_keyboard();				// Scan Keyboard.
         if (key_var == 0) {
 		  mode = Laser1_Value;					// Set New Mode.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		}
 	    break;
 
@@ -4716,7 +4750,8 @@ void main_plm(void)
 		  printf2("*** New_Prog ***\n");
 		  laser_hold = 0;						// Clear laser_hold var.
 	      New_Prog_Screen();						// Display Screen.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  once = 1;								// Set Once Flag.
 		}
 	    else
@@ -4767,7 +4802,8 @@ void main_plm(void)
 		  printf2("*** Delete_Prog ***\n");
 		  monPrint("MNTR", "Delete_Prog");					// Send Status Message
 	      Delete_Prog_Screen();					// Display Screen.
-		  two_min_start();						// Two Minute Timer Start.
+			if(Timeout_active())
+				Timout_start();					// TimeOut Timer Start.
 		  laser_hold = 0;						// Clear laser_hold var.
 		  once = 1;								// Set Once Flag.
 		}
