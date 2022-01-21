@@ -4109,3 +4109,58 @@ void TestOriginmonitor( char* parm1)
 	}
 	printf2("\n\n");
 }
+
+void timeOutmonitor( char* parm1)
+{
+	unsigned int testValue;
+
+	char tempstr[80];
+
+	// Test to see if there is no Parameter
+	if (strlen(parm1) == 0)
+	{
+		printf2("*****************************************\n");
+		sprintf(tempstr, "Current Timeout Value: %d\n", timeout_Value);
+		printf2(tempstr);
+	}
+	else
+	{
+		// Test Parameter and see if we have three values.
+		if (sscanf(parm1, "%d", &testValue) == 1) {
+			// Test Value Range.
+			if ((testValue>=0) && (testValue<65537))
+			{
+				// Valid Range
+				// 1. Set New Value.
+				timeout_Value = testValue;
+
+				// 2. Save Value to Flash
+				// Write Timeout Value Var
+				EEPROM_WRITE((uint32_t)&timeout_Value, (uint32_t)&etimeout_Value, sizeof(timeout_Value));	// Write timeout_Value to Flash.
+				WDR(); //this prevents a timout on enabling
+
+				// 3. Restart timer if valid
+				if(Timeout_active())
+				{
+					Timout_start();
+					printf2("*****************************************\n");
+					sprintf(tempstr, "New Timeout Value: %d\n", timeout_Value);
+					printf2(tempstr);
+				}
+				else
+				{
+					printf2("*****************************************\n");
+					sprintf(tempstr, "Timeout Value Deactivated.\n", timeout_Value);
+					printf2(tempstr);
+				}
+			}
+			else
+			{
+				printf2("ILLEGAL Timeout Parameter!!\n");
+			}
+		} else {
+			printf2("ILLEGAL Timeout Parameter!!\n");
+		}
+	}
+	printf2("\n\n");
+}
