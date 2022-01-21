@@ -415,6 +415,10 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		KeyPressmonitor( parm1 );
 	}
+	else if( strncmp(cmdString, "timeOut", 7) == 0)
+	{
+		timeOutmonitor( parm1 );
+	}
 	else
 	{
 		printf2("Bad Command!!\n");
