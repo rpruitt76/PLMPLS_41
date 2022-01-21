@@ -379,6 +379,7 @@ extern void testPBFmonitor( char* parm1);
 extern void setPBFmonitor( char* parm1);
 extern void setUPgmmonitor( char* parm1);
 extern void TestOriginmonitor( char* parm1);
+extern 	void timeOutmonitor( char* parm1);
 extern unsigned char reverseChar( unsigned char parm1);
 extern void DateEntryScrn(void);
 extern void TimeEntryScrn(void);
