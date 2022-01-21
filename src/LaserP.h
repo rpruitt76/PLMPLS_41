@@ -97,9 +97,9 @@
 //#define  PARKCL			1			 // Define if this is a Mark III Park College Design
                                      // Comment it out for a Mark III Load.
 // Mark III Version Numbers and Dates...Release 3.3
-#define	 VERSIONNUM		"4.02" 		 // Current Version Revision.(4 CHARS)
-#define  RELDATE		"11/07/21"	 // Current Release Date.(8 Chars)
-#define	 VERSIONSTR		"PLM PLUS V4.02 Nov 7, 2021" 		 // Current Version String Revision.
+#define	 VERSIONNUM		"4.03" 		 // Current Version Revision.(4 CHARS)
+#define  RELDATE		"01/20/22"	 // Current Release Date.(8 Chars)
+#define	 VERSIONSTR		"PLM PLUS V4.03 Jan 20, 2022" 		 // Current Version String Revision.
 
 //#define	 MAX_MULT_FREQ  195000000		// Highest Frequency is 195000000MHz
 //#define	 DEF_HIGH_FREQ	180000000		// Default High Frequency.
