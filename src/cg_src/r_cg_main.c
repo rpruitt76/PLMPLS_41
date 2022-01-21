@@ -717,7 +717,7 @@ void main_plm(void)
 
 				if (mode != DateEntryScreen) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -815,7 +815,7 @@ void main_plm(void)
 
 				if (mode != TimeEntryScreen) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -908,7 +908,7 @@ void main_plm(void)
 
 				if (mode != SerialNumScreen) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -1026,7 +1026,7 @@ void main_plm(void)
 
 				if (mode != PBFEntryScreen) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -1133,7 +1133,7 @@ void main_plm(void)
 
 				if (mode != ShowTimeMode) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -1190,7 +1190,7 @@ void main_plm(void)
 
 				if (mode != SerialNumScreen) {
 					once = 0;							// Reset once flag.
-					two_min_clear();				   // Clear 5 MInute Timer.
+					Timeout_clear();				   // Clear 5 MInute Timer.
 				}
 				else
 					if(Timeout_active())
@@ -1300,7 +1300,7 @@ void main_plm(void)
 
 			  if (mode != KeyScreen) {
 				  once = 0;							// Reset once flag.
-				  two_min_clear();				   // Clear 5 MInute Timer.
+				  Timeout_clear();				   // Clear 5 MInute Timer.
 			  }
 			  else
 					if(Timeout_active())
@@ -1639,7 +1639,7 @@ void main_plm(void)
 			  } // End Switch on key_var
 			  if (mode != SndScreen) {
 				  once = 0;							// Reset once flag.
-				  two_min_clear();				   // Clear 5 MInute Timer.
+				  Timeout_clear();				   // Clear 5 MInute Timer.
 			  }
 			  else
 					if(Timeout_active())
@@ -1963,7 +1963,7 @@ void main_plm(void)
 		    } // End Switch on key_var
 			if (mode != Main) {
 		      once = 0;							// Reset once flag.
-			  two_min_clear();				   // Clear 5 MInute Timer.
+			  Timeout_clear();				   // Clear 5 MInute Timer.
 			}
 			else
 				if(Timeout_active())
@@ -2017,7 +2017,7 @@ void main_plm(void)
 	    		(mode == LOW_BAT))
 	    {
 	    	nobeep_flg = 1;					    // Turn On Beep.
-			two_min_clear();					// Clear 2 Minute Timer.
+			Timeout_clear();					// Clear 2 Minute Timer.
 	    	if (mode == LOW_BAT)
 	    		mode = Low_PD;	  				    // We are now in true Low Power Mode..
 	    	else
@@ -2045,7 +2045,7 @@ void main_plm(void)
 			  {
 				mode = Main;						// Set New Mode.
 				once = 0;							// Reset once flag.
-				two_min_clear();					// Clear 2 Minute Timer.
+				Timeout_clear();					// Clear 2 Minute Timer.
 			  }
 			}
 	    }
@@ -2068,7 +2068,7 @@ void main_plm(void)
 	    		(mode == LOW_BAT))
 	    {
 	    	nobeep_flg = 1;					    // Turn On Beep.
-			two_min_clear();					// Clear 2 Minute Timer.
+			Timeout_clear();					// Clear 2 Minute Timer.
 	    	if (mode == LOW_BAT)
 	    		mode = Low_PD;	  				    // We are now in true Low Power Mode..
 	    	else
@@ -2082,7 +2082,7 @@ void main_plm(void)
 				// Key release
 				mode = Timed_Laser;					// Set New Mode.
 				once = 0;							// Reset once flag.
-				two_min_clear();					// Clear 2 Minute Timer.
+				Timeout_clear();					// Clear 2 Minute Timer.
 				nobeep_flg = 1;					    // Turn On Beep.
 			}
 	    }
@@ -2320,7 +2320,7 @@ void main_plm(void)
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
-			  two_min_clear();					// Clear 2 Minute Timer.
+			  Timeout_clear();					// Clear 2 Minute Timer.
 			  if (mode == LOW_BAT)
 				  mode = Low_PD;	  				    // We are now in true Low Power Mode..
 			  else
@@ -2348,7 +2348,7 @@ void main_plm(void)
 				  {
 					  mode = Main;						// Set New Mode.
 					  once = 0;							// Reset once flag.
-					  two_min_clear();					// Clear 2 Minute Timer.
+					  Timeout_clear();					// Clear 2 Minute Timer.
 				  }
 			  }
 		  }
@@ -2371,7 +2371,7 @@ void main_plm(void)
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
-			  two_min_clear();					// Clear 2 Minute Timer.
+			  Timeout_clear();					// Clear 2 Minute Timer.
 			  if (mode == LOW_BAT)
 				  mode = Low_PD;	  				    // We are now in true Low Power Mode..
 			  else
@@ -2385,7 +2385,7 @@ void main_plm(void)
 				  // Key release
 				  mode = Five_Min_Mode;					// Set New Mode.
 				  once = 0;							// Reset once flag.
-				  two_min_clear();					// Clear 2 Minute Timer.
+				  Timeout_clear();					// Clear 2 Minute Timer.
 				  nobeep_flg = 1;					    // Turn On Beep.
 			  }
 		  }
@@ -2444,7 +2444,7 @@ void main_plm(void)
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
-			  two_min_clear();					// Clear 2 Minute Timer.
+			  Timeout_clear();					// Clear 2 Minute Timer.
 			  if (mode == LOW_BAT)
 				  mode = Low_PD;	  				    // We are now in true Low Power Mode..
 			  else
@@ -2472,7 +2472,7 @@ void main_plm(void)
 				  {
 					  mode = Main;						// Set New Mode.
 					  once = 0;							// Reset once flag.
-					  two_min_clear();					// Clear 2 Minute Timer.
+					  Timeout_clear();					// Clear 2 Minute Timer.
 				  }
 			  }
 		  }
@@ -2495,7 +2495,7 @@ void main_plm(void)
 				  (mode == LOW_BAT))
 		  {
 			  nobeep_flg = 1;					    // Turn On Beep.
-			  two_min_clear();					// Clear 2 Minute Timer.
+			  Timeout_clear();					// Clear 2 Minute Timer.
 			  if (mode == LOW_BAT)
 				  mode = Low_PD;	  				    // We are now in true Low Power Mode..
 			  else
@@ -2509,14 +2509,14 @@ void main_plm(void)
 				  // Key release
 				  mode = Main;					// Set New Mode.
 				  once = 0;							// Reset once flag.
-				  two_min_clear();					// Clear 2 Minute Timer.
+				  Timeout_clear();					// Clear 2 Minute Timer.
 				  nobeep_flg = 1;					    // Turn On Beep.
 			  }
 			  else
 			  {
 				  mode = Laser_On;					// Set New Mode.
 				  once = 0;							// Reset once flag.
-				  two_min_clear();					// Clear 2 Minute Timer.
+				  Timeout_clear();					// Clear 2 Minute Timer.
 			  }
 		  }
 		  break;
