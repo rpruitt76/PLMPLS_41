@@ -3698,8 +3698,15 @@ void SetTimer( char* parm1)
 		}
 		else
 		{
+/*
 			tmr_min = minute;		// Build new tmr_min.
 			tmr_sec = second;		// Build new tmr_min.
+*/
+			tmr_min = (minute * 60) + second;
+			if (tmr_min > 999)
+				tmr_min = 999;
+			tmr_sec = 0;		// Build new tmr_min.
+
 			save_vars();  	 	  	// Save Updated Variables.
 			sprintf(tempstr,"Updated Timer:%d:%d\n",
 					minute,

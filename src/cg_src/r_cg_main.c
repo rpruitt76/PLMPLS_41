@@ -3664,17 +3664,31 @@ void main_plm(void)
 			    break;
 
 			  case BACK:
-			    tmr_secstr[1] = tmr_secstr[0];
+/*
+				tmr_secstr[1] = tmr_secstr[0];
 				tmr_secstr[0] = tmr_minstr[1];
 				tmr_minstr[1] = tmr_minstr[0];
 				tmr_minstr[0] = ' ';
+*/
+				tmr_secstr[1] = tmr_secstr[0];
+				tmr_secstr[0] = tmr_minstr[2];
+				tmr_minstr[2] = tmr_minstr[1];
+				tmr_minstr[1] = ' ';
+				tmr_minstr[0] = ' ';
+
 				tmr_min = atoi(tmr_minstr);		// Build new tmr_min.
 				tmr_sec = atoi(tmr_secstr);		// Build new tmr_min.
 				mode = Remove_1Key;				// Set New Mode.
 			    break;
 
 			  case SELECT:
-				sprintf(temp_String,"%s:%s", tmr_minstr, tmr_secstr);
+//				sprintf(temp_String,"%s:%s", tmr_minstr, tmr_secstr);
+				tmr_min = (tmr_min * 60) + tmr_sec;
+				if(tmr_min > 999)
+					tmr_min = 999;
+				tmr_sec = 0;
+				sprintf(temp_String,"%s:%s:00", tmr_minstr, tmr_secstr);
+
 				monPrint("SETTIMER", temp_String);					// Send Status Message
 				mode = Save_Settings;			// Set New Mode.
 		        once = 0;							// Reset once flag.
@@ -3704,11 +3718,20 @@ void main_plm(void)
                   strcpy(tmr_minstr, "  ");			// Copy a Blank string to tmr_minstr.
                   strcpy(tmr_secstr, "  ");			// Copy a Blank string to tmr_secstr.
 			    }
+/*
 			    tmr_minstr[0] = tmr_minstr[1];
 				tmr_minstr[1] = tmr_secstr[0];
 				tmr_secstr[0] = tmr_secstr[1];
 				char1 = get_numstr(key_var);
 			    tmr_secstr[1] = char1[0];
+*/
+				tmr_minstr[0] = ' ';
+				tmr_minstr[1] = tmr_minstr[2];
+				tmr_minstr[2] = tmr_secstr[0];
+				tmr_secstr[0] = tmr_secstr[1];
+				char1 = get_numstr(key_var);
+				tmr_secstr[1] = char1[0];
+
 				tmr_min = atoi(tmr_minstr);		// Build new tmr_min.
 				tmr_sec = atoi(tmr_secstr);		// Build new tmr_min.
 				mode = Buffer_Build;			// Set New Mode.
