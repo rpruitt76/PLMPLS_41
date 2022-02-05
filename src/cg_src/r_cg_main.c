@@ -291,7 +291,8 @@ void main_plm(void)
   char temp_String[80];
   int hour, minute, second, month, day, year;
   //unsigned char status, key_var, old_key, sav_sec, sav_min, incr_flg;
-  unsigned char key_var, once, sav_sec, sav_min, incr_flg;
+  unsigned char key_var, once, sav_sec, incr_flg;
+  unsigned int sav_min;
   char *char1;
   static unsigned int update_num;
   static unsigned int save_prog;				 // Program Number

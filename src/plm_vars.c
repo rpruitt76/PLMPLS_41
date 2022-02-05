@@ -88,8 +88,8 @@
 		 char	   			prog_str[4];
 		 unsigned int		progwk_num;				 // Program Number
 #endif
-		 unsigned char		tmr_min;				 // Timer Minutes
-		 char	   			tmr_minstr[3];
+		 unsigned int		tmr_min;				 // Timer Minutes
+		 char	   			tmr_minstr[4];
 		 unsigned char		tmr_sec;				 // Timer Seconds
 		 char	   			tmr_secstr[3];
 		 uchar				min_chg, sec_chg;		 // Generic vars for Changing timers.
@@ -198,7 +198,7 @@
   		const unsigned char 		eprescale2 = 2;			 	 // Timer 2 Prescale.
   		const unsigned char		emode = 0;				 	 // System Tasking Mode.
   		const unsigned char		esm = 1;					 // Sub-Mode Variable
-  		const unsigned char		etmr_min = 3;				 // Timer Minutes
+  		const unsigned int		etmr_min = 3;				 // Timer Minutes
   		const unsigned char		etmr_sec = 0;				 // Timer Seconds
   		const unsigned int		eprog_num = 1;				 // Program Number
   		const unsigned char		eetmp1 = 1;				 	 // EE Place Holder

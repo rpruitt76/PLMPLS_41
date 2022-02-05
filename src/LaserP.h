@@ -531,9 +531,9 @@ extern const unsigned char		emode;			 // System Tasking Mode.
 extern const unsigned char		esm;			 // Sub-Mode Variable
 extern unsigned char		mode;			 // System Tasking Mode.
 extern unsigned char		sm;			 	 // Sub-Mode Variable
-extern unsigned char		tmr_min;		 // Timer Minutes
+extern unsigned int		tmr_min;		 // Timer Minutes
 extern unsigned char		tmr_sec;		 // Timer Seconds
-extern const unsigned char		etmr_min;		 // Timer Minutes
+extern const unsigned int		etmr_min;		 // Timer Minutes
 extern const unsigned char		etmr_sec;		 // Timer Seconds
 extern unsigned char		p5_second;		 // 0.5 Second Timer
 extern unsigned char		two_second;		 // Two Second Timer

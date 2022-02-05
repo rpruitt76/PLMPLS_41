@@ -302,7 +302,8 @@ void init_devices(void)
 	sweep1.sweep_key = 0;			 // Set variable modification ptr to Timer values.
 
 	// Initialize Key Strings.
-	strcpy(tmr_minstr, "--");
+//	strcpy(tmr_minstr, "--");
+	strcpy(tmr_minstr, "---");
 	strcpy(tmr_secstr, "--");
 	strcpy(Bat_Lvl, "___");
 #if LEASEOP

@@ -3274,7 +3274,8 @@ void remain_screen(void)
 {
   char tempstr[18];
   char time_str[12];
-  unsigned char save_min, save_sec;
+  unsigned char save_sec;
+  unsigned int save_min;
   int  tempvar;
   char tempstr2[4];
   unsigned char temp1;
@@ -3313,14 +3314,16 @@ void remain_screen(void)
 	tmr_min = macro1.macro1->mac_entry[0].Time.minutes;
     tmr_sec = macro1.macro1->mac_entry[0].Time.seconds;
     // Convert Timer values to strings.
-    str_chg_char(tmr_minstr, 2, tmr_min, ZEROS);
+    //str_chg_char(tmr_minstr, 2, tmr_min, ZEROS);
+	str_chg_int(tmr_minstr, 3, tmr_min, ZEROS);
     str_chg_char(tmr_secstr, 2, tmr_sec, ZEROS);
     // Restore Timers.
     tmr_min = save_min;
 	tmr_sec = save_sec;
   }
   else {  
-    str_chg_char(tmr_minstr, 2, tmr_min, ZEROS);
+    //str_chg_char(tmr_minstr, 2, tmr_min, ZEROS);
+	str_chg_int(tmr_minstr, 3, tmr_min, ZEROS);
     str_chg_char(tmr_secstr, 2, tmr_sec, ZEROS);
   }
   // If lsr_update_flg is set we are loading new values...Don't Change!!!
@@ -3367,23 +3370,27 @@ void remain_screen(void)
   if (mode == Time_Value)
     underline = 1;
 #ifndef PCB_1_00
-  set_cursor(LINE1,11, NOCURSOR);
+  //set_cursor(LINE1,11, NOCURSOR);
+  set_cursor(LINE1,10, NOCURSOR);
 #endif
   write_lcd(tmr_minstr);
   strcpy(tempstr, ":");
 #ifndef PCB_1_00
-  set_cursor(LINE1,10, NOCURSOR);
+  //set_cursor(LINE1,10, NOCURSOR);
+  set_cursor(LINE1,9, NOCURSOR);
 #endif
   write_lcd(tempstr);
 #ifndef PCB_1_00
-  set_cursor(LINE1,8, NOCURSOR);
+  //set_cursor(LINE1,8, NOCURSOR);
+  set_cursor(LINE1,7, NOCURSOR);
 #endif
   write_lcd(tmr_secstr);
   underline = 0;
 #ifndef PCB_1_00
   set_cursor(LINE1,4, NOCURSOR);
 #endif
-  strcpy(tempstr, "   E");
+  //strcpy(tempstr, "   E");
+  strcpy(tempstr, "  E");
   write_lcd(tempstr);
 #ifndef PCB_1_00
   set_cursor(LINE1,1, NOCURSOR);
@@ -4088,7 +4095,7 @@ void smmain_screen(void)
 //*****************************************************************************
 void update_time(void)
 {
-  static unsigned char min_save=0;
+  static unsigned int min_save=0;
   static unsigned char sec_save=0;
   
   // Time to convert numbers to strings
