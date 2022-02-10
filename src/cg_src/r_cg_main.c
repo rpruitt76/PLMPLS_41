@@ -398,7 +398,7 @@ void main_plm(void)
     printf2("PLM Monitor Starting... \n\n");
     printf2("***************************************************************\n");
     printf2("PLM PLUS OS Version 4.04\n");
-    printf2("Copyright: Feb 5, 2022\n");
+    printf2("Copyright: Feb 10, 2022\n");
     printf2("Property of Cold Laser Therapeutics, LLC\n");
     printf2("***************************************************************\n\n\n");
 
@@ -3098,6 +3098,7 @@ void main_plm(void)
 			nobeep_flg = 0;					    // Turn On Beep.
 		    switch (key_var) {
 			  case UP:
+			  case RIGHT:
 		  	    update_num = 0;					// Clear update_num var.
 				prog_num++;					    // Increment Program Number.
 #ifdef CLW
@@ -3165,6 +3166,7 @@ void main_plm(void)
 			    break;
 
 			  case DOWN:
+			  case LEFT:
 		  	    update_num = 0;					// Clear update_num var.
 			    if (prog_num == 0)
 				  prog_num = PROG_NUMBR;
@@ -4030,6 +4032,7 @@ void main_plm(void)
 			nobeep_flg = 0;					    // Turn Off Beep.
 		    switch (key_var) {
 			  case UP:
+			  case RIGHT:
 			    switch (sm)
 				{
 				  // Laser 1 Settings
@@ -4100,6 +4103,7 @@ void main_plm(void)
 		        break;
 
 			  case DOWN:
+			  case LEFT:
 			    switch (sm)
 				{
 				  // Laser 1 Settings
@@ -4171,7 +4175,7 @@ void main_plm(void)
 				}
 			    break;
 
-			  case RIGHT:
+/*			  case RIGHT:
 			    switch (sm)
 				{
 				  // Laser 1 Settings
@@ -4243,7 +4247,7 @@ void main_plm(void)
 				    break;
 				}
 			    break;
-
+*/
 			  case BACK:
 			    switch (sm)
 				{
