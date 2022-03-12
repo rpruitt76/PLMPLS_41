@@ -1375,13 +1375,14 @@ struct plmLaser_entry calc_sweeptimeP(unsigned long frequency1, int LaserNumber)
 //*
 //* routine: calc_ratio
 //* Date: 	 February 8, 2015
-//* Updated: February 8, 2015
+//* Updated: March 6, 2022
 //* Author:  Ralph Pruitt
 //* Calculate New Frequency count based on passed Frequency. This also
 //* Involves determining the optimum parameters for this event.
 //*
 //*****************************************************************************
-struct plmLaser_entry calc_ratio(unsigned long cnt_value, int timer_number) {
+struct plmLaser_entry calc_ratio( unsigned long cnt_value, int timer_number)
+{
 	struct plmLaser_entry temp1;
 #ifdef MN_LASER
 	char tempstr[80];
@@ -1392,97 +1393,114 @@ struct plmLaser_entry calc_ratio(unsigned long cnt_value, int timer_number) {
 	sprintf(tempstr,"calc_ratio cnt_vale:%ld   timer_number:%d\n", cnt_value, timer_number );
 	printf2(tempstr);
 #endif
-	switch (timer_number) {
-	case MTU0_LaserDiode0:
-		if (cnt_value > 6000000) {
+	switch(timer_number)
+	{
+		case MTU0_LaserDiode0:
+			if(cnt_value>6000000)
+			{
 #ifdef MN_LASER
 				printf2("   cnt_value>6,000,000\n");
 #endif
-			temp1.prescaler = _05_MTU_PCLK_1024;
-			temp1.cnt_value = cnt_value / 1024;
-			temp1.Special1 = MODE_TCR2;
-		} else if (cnt_value > 600000) {
+				temp1.prescaler = _05_MTU_PCLK_1024;
+				temp1.cnt_value = cnt_value/1024;
+				temp1.Special1 = MODE_TCR2;
+			}
+			else if(cnt_value>32700)
+			{
 #ifdef MN_LASER
-				printf2("   cnt_value>600,000\n");
+				printf2("   cnt_value>32,700\n");
 #endif
-			temp1.prescaler = _04_MTU_PCLK_256;
-			temp1.cnt_value = cnt_value / 256;
-			temp1.Special1 = MODE_TCR2;
-		} else {
-			temp1.prescaler = _00_MTU_PCLK_1;
-			temp1.cnt_value = cnt_value;
-			temp1.Special1 = MODE_TCR;
-		}
+				temp1.prescaler = _04_MTU_PCLK_256;
+				temp1.cnt_value = cnt_value/256;
+				temp1.Special1 = MODE_TCR2;
+			}
+			else
+			{
+				temp1.prescaler = _00_MTU_PCLK_1;
+				temp1.cnt_value = cnt_value;
+				temp1.Special1 = MODE_TCR;
+			}
 #ifdef MN_LASER
 			sprintf(tempstr,"   prescaler:%d   cnt_vale:%ld   Special1:%d\n", temp1.prescaler, temp1.cnt_value, temp1.Special1 );
 			printf2(tempstr);
 #endif
-		return temp1;
-		break;
-	case MTU1_LaserDiode1:
-		if (cnt_value > 6000000) {
+			return temp1;
+			break;
+		case MTU1_LaserDiode1:
+			if(cnt_value>6000000)
+			{
 #ifdef MN_LASER
 				printf2("   cnt_value>6,000,000\n");
 #endif
-			temp1.prescaler = _04_MTU_PCLK_1024;
-			temp1.cnt_value = cnt_value / 1024;
-			temp1.Special1 = MODE_TCR2;
-		} else if (cnt_value > 600000) {
+				temp1.prescaler = _04_MTU_PCLK_1024;
+				temp1.cnt_value = cnt_value/1024;
+				temp1.Special1 = MODE_TCR2;
+			}
+			else if(cnt_value>32700)
+			{
 #ifdef MN_LASER
-				printf2("   cnt_value>600,000\n");
+				printf2("   cnt_value>32,700\n");
 #endif
-			temp1.prescaler = _06_MTU_PCLK_256;
-			temp1.cnt_value = cnt_value / 256;
-			temp1.Special1 = MODE_TCR;
-		} else {
-			temp1.prescaler = _00_MTU_PCLK_1;
-			temp1.cnt_value = cnt_value;
-			temp1.Special1 = MODE_TCR;
-		}
+				temp1.prescaler = _06_MTU_PCLK_256;
+				temp1.cnt_value = cnt_value/256;
+				temp1.Special1 = MODE_TCR;
+			}
+			else
+			{
+				temp1.prescaler = _00_MTU_PCLK_1;
+				temp1.cnt_value = cnt_value;
+				temp1.Special1 = MODE_TCR;
+			}
 #ifdef MN_LASER
 			sprintf(tempstr,"   prescaler:%d   cnt_vale:%ld   Special1:%d\n", temp1.prescaler, temp1.cnt_value, temp1.Special1 );
 			printf2(tempstr);
 #endif
-		return temp1;
-		break;
-	case MTU3_PLLInput2:
-	case MTU4_LaserDiode2b:
-	case MTU6_PLLInput3:
-	case MTU7_LaserDiode3b:
-		if (cnt_value > 6000000) {
+			return temp1;
+			break;
+		case MTU3_PLLInput2:
+		case MTU4_LaserDiode2b:
+		case MTU6_PLLInput3:
+		case MTU7_LaserDiode3b:
+			if(cnt_value>6000000)
+			{
 #ifdef MN_LASER
 				printf2("   cnt_value>6,000,000\n");
 #endif
-			temp1.prescaler = _05_MTU_PCLK_1024;
-			temp1.cnt_value = cnt_value / 1024;
-			temp1.Special1 = MODE_TCR;
-		} else if (cnt_value > 600000) {
+				temp1.prescaler = _05_MTU_PCLK_1024;
+				temp1.cnt_value = cnt_value/1024;
+				temp1.Special1 = MODE_TCR;
+			}
+			else if(cnt_value>32700)
+			{
 #ifdef MN_LASER
-				printf2("   cnt_value>600,000\n");
+				printf2("   cnt_value>32,700\n");
 #endif
-			temp1.prescaler = _04_MTU_PCLK_256;
-			temp1.cnt_value = cnt_value / 256;
-			temp1.Special1 = MODE_TCR;
-		} else {
-			temp1.prescaler = _00_MTU_PCLK_1;
-			temp1.cnt_value = cnt_value;
-			temp1.Special1 = MODE_TCR;
-		}
+				temp1.prescaler = _04_MTU_PCLK_256;
+				temp1.cnt_value = cnt_value/256;
+				temp1.Special1 = MODE_TCR;
+			}
+			else
+			{
+				temp1.prescaler = _00_MTU_PCLK_1;
+				temp1.cnt_value = cnt_value;
+				temp1.Special1 = MODE_TCR;
+			}
 #ifdef MN_LASER
 			sprintf(tempstr,"   prescaler:%d   cnt_vale:%ld   Special1:%d\n", temp1.prescaler, temp1.cnt_value, temp1.Special1 );
 			printf2(tempstr);
 #endif
-		return temp1;
-		break;
-	default:
-		printf2("MODE_ERROR\n");
-		temp1.prescaler = 0;
-		temp1.cnt_value = 0;
-		temp1.Special1 = MODE_ERROR;
-		break;
+			return temp1;
+			break;
+		default:
+			printf2("MODE_ERROR\n");
+			temp1.prescaler = 0;
+			temp1.cnt_value = 0;
+			temp1.Special1 = MODE_ERROR;
+			break;
 	}
 	return temp1;
 }
+
 //*****************************************************************************
 //*
 //* routine: calc_sweeptime

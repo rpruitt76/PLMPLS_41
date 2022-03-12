@@ -2813,6 +2813,10 @@ void save_vars(void)
 	EEPROM_WRITE((uint32_t)&leaseYear, (uint32_t)&eleaseYear, sizeof(leaseYear));	 	// Write leaseYear to Flash.
 	WDR(); //this prevents a timout on enabling
 
+	// Write Saved Mac Address to String Variable.
+	EEPROM_WRITE((uint32_t)&mac_addr, (uint32_t)&emac_addr, sizeof(mac_addr));	// Write timeout_Value to Flash.
+	WDR(); //this prevents a timout on enabling
+
 	// Write Timeout Value Var
 	EEPROM_WRITE((uint32_t)&timeout_Value, (uint32_t)&etimeout_Value, sizeof(timeout_Value));	// Write timeout_Value to Flash.
 	WDR(); //this prevents a timout on enabling
@@ -2889,6 +2893,9 @@ void restore_vars(void)
 	leaseMnth = eleaseMnth;						 	// Write leaseMnth to Flash.
 	leaseYear = eleaseYear;	 						// Write leaseYear to Flash.
 	WDR(); 											//this prevents a timeout on enabling
+
+	// Read Saved Mac Address to String Variable.
+	strcpy(mac_addr, emac_addr);
 
 	// Read Timeout Value
 	timeout_Value = etimeout_Value;					// Read Timeout Value from flash.
@@ -4169,5 +4176,100 @@ void timeOutmonitor( char* parm1)
 			printf2("ILLEGAL Timeout Parameter!!\n");
 		}
 	}
+	printf2("\n\n");
+}
+
+/*****************************************************************************
+ *
+ * routine: tst_laser_active
+ * Date: 	March 10, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine returns the status of the kay var laser_flg
+ *
+ * INPUT:
+ *  @param	None
+ *
+ * OUTPUT:
+ * 	@retval Laser Active Status	-	True         = 0x01:	Laser Event Active
+ * 									False        = 0x00:	No Laser Event Active
+ *
+ *****************************************************************************/
+bool tst_laser_active( void )
+{
+	if (laser_flg > 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/*****************************************************************************
+ *
+ * routine: Wr_MacAddrmonitor
+ * Date: 	March 10, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine writes the first 4 Chars passed to the String var
+ * mac_addr.
+ *
+ * INPUT:
+ *  @param	parm1	: Character string representing new Mac Address
+ *
+ * OUTPUT:
+ * 	@retval NONE
+ *
+ *****************************************************************************/
+void Wr_MacAddrmonitor( char* parm1)
+{
+	char tempstr[80];
+	char teststr[8];
+
+	// Test to see if there is no Parameter
+	if (strlen(parm1) == 0)
+	{
+		printf2("Error. No String Passed.\n");
+	}
+	else
+	{
+		if (strlen(parm1) > 4)
+			strncpy(teststr, parm1, 4);
+		else
+			strcpy(teststr,parm1);
+		// Save to Global Var.
+		strcpy(mac_addr, teststr);
+
+		// Read Saved Mac Address to String Variable.
+		EEPROM_WRITE((uint32_t)&mac_addr, (uint32_t)&emac_addr, sizeof(mac_addr));	// Write timeout_Value to Flash.
+
+		printf2("*********************\n");
+		sprintf(tempstr, "New mac_addr: %s\n", mac_addr);
+		printf2(tempstr);
+	}
+	printf2("\n\n");
+}
+
+/*****************************************************************************
+ *
+ * routine: Rd_MacAddrmonitor
+ * Date: 	March 10, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine returns the string variable mac_addr.
+ *
+ * INPUT:
+ *  @param	parm1	: Character string representing new Mac Address
+ *
+ * OUTPUT:
+ * 	@retval NONE
+ *
+ *****************************************************************************/
+void Rd_MacAddrmonitor( char* parm1)
+{
+	char tempstr[80];
+
+	// Test to see if there is no Parameter
+	printf2("*********************\n");
+	sprintf(tempstr, "mac_addr: %s\n", mac_addr);
+	printf2(tempstr);
 	printf2("\n\n");
 }

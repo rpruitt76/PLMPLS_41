@@ -343,11 +343,13 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		Macromonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "laser", 5) == 0)
+	else if(( strncmp(cmdString, "laser", 5) == 0)
+			&& (!tst_laser_active()))
 	{
 		Lasermonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "laseron", 7) == 0)
+	else if(( strncmp(cmdString, "laseron", 7) == 0)
+			&& (!tst_laser_active()))
 	{
 		LaserOnmonitor( parm1 );
 	}
@@ -359,11 +361,13 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		Miscmonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "SetPGM", 6) == 0)
+	else if(( strncmp(cmdString, "SetPGM", 6) == 0)
+			&& (!tst_laser_active()))
 	{
 		SetProgram( parm1 );
 	}
-	else if( strncmp(cmdString, "TimerSet", 8) == 0)
+	else if(( strncmp(cmdString, "TimerSet", 8) == 0)
+			&& (!tst_laser_active()))
 	{
 		SetTimer( parm1 );
 	}
@@ -379,7 +383,8 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		SetSNmonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "setMode", 7) == 0)
+	else if(( strncmp(cmdString, "setMode", 7) == 0)
+		&& (!tst_laser_active()))
 	{
 		SetModeMonitor( parm1 );
 	}
@@ -399,15 +404,18 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		setUPgmmonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "testO", 5) == 0)
+	else if(( strncmp(cmdString, "testO", 5) == 0)
+		&& (!tst_laser_active()))
 	{
 		TestOriginmonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "mode", 4) == 0)
+	else if(( strncmp(cmdString, "mode", 4) == 0)
+		&& (!tst_laser_active()))
 	{
 		ModeMonitor( parm1 );
 	}
-	else if( strncmp(cmdString, "hmc", 3) == 0)
+	else if(( strncmp(cmdString, "hmc", 3) == 0)
+		&& (!tst_laser_active()))
 	{
 		hmcmonitor( parm1 );
 	}
@@ -419,9 +427,20 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		timeOutmonitor( parm1 );
 	}
+	else if( strncmp(cmdString, "WrMAdr", 6) == 0)
+	{
+		Wr_MacAddrmonitor( parm1 );
+	}
+	else if( strncmp(cmdString, "RdMAdr", 6) == 0)
+	{
+		Rd_MacAddrmonitor( parm1 );
+	}
 	else
 	{
-		printf2("Bad Command!!\n");
+		if  (tst_laser_active())
+			printf2("Laser Event Active!!\n");
+		else
+			printf2("Bad Command!!\n");
 	} // EndElse
 
 	// Disable Streaming for Monitor

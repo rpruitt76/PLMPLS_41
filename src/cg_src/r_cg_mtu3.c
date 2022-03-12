@@ -539,63 +539,82 @@ void R_MTU3_plmCreate(struct plmLaser_entry laser1, struct plmLaser_entry laser2
     MTU.TRWERB.BYTE = _00_MTU_RWE_DISABLE;
 
     /* Set MTIOC0A pin */
-    MPC.P34PFS.BYTE = 0x01U;
-    PORT3.PMR.BYTE |= 0x10U;
+    /*
+     * P34, P13, PA3, P20
+     * P13: LaserDiode0
+     * P20: LaserDioide1
+     */
+    //MPC.P34PFS.BYTE = 0x01U;
+    //PORT3.PMR.BYTE |= 0x10U;
     /* Set MTIOC0B pin */
     MPC.P13PFS.BYTE = 0x01U;
     PORT1.PMR.BYTE |= 0x08U;
     /* Set MTIOC0D pin */
-    MPC.PA3PFS.BYTE = 0x01U;
-    PORTA.PMR.BYTE |= 0x08U;
+    //MPC.PA3PFS.BYTE = 0x01U;
+    //PORTA.PMR.BYTE |= 0x08U;
     /* Set MTIOC1A pin */
     MPC.P20PFS.BYTE = 0x01U;
     PORT2.PMR.BYTE |= 0x01U;
 
     /* Set MTIOC4B pin */
+	/*
+	 * P17
+	 * P17: LaserDiode2b
+	 */
 	MPC.P17PFS.BYTE = 0x08U;
 	PORT1.PMR.BYTE |= 0x80U;
 
     /* Set MTIOC3B pin */
-    MPC.P80PFS.BYTE = 0x01U;
-    PORT8.PMR.BYTE |= 0x01U;
+    /*
+     * P80, P56, P81, P82, P25, P31, PE7, PA5, PE6
+     */
+    //MPC.P80PFS.BYTE = 0x01U;
+    //PORT8.PMR.BYTE |= 0x01U;
     /* Set MTIOC3C pin */
-    MPC.P56PFS.BYTE = 0x01U;
-    PORT5.PMR.BYTE |= 0x40U;
+    //MPC.P56PFS.BYTE = 0x01U;
+    //PORT5.PMR.BYTE |= 0x40U;
     /* Set MTIOC3D pin */
-    MPC.P81PFS.BYTE = 0x01U;
-    PORT8.PMR.BYTE |= 0x02U;
+    //MPC.P81PFS.BYTE = 0x01U;
+    //PORT8.PMR.BYTE |= 0x02U;
     /* Set MTIOC4A pin */
-    MPC.P82PFS.BYTE = 0x01U;
-    PORT8.PMR.BYTE |= 0x04U;
+    //MPC.P82PFS.BYTE = 0x01U;
+    //PORT8.PMR.BYTE |= 0x04U;
     /* Set MTIOC4C pin */
-    MPC.P25PFS.BYTE = 0x01U;
-    PORT2.PMR.BYTE |= 0x20U;
+    //MPC.P25PFS.BYTE = 0x01U;
+    //PORT2.PMR.BYTE |= 0x20U;
     /* Set MTIOC4D pin */
-    MPC.P31PFS.BYTE = 0x01U;
-    PORT3.PMR.BYTE |= 0x02U;
+    //MPC.P31PFS.BYTE = 0x01U;
+    //PORT3.PMR.BYTE |= 0x02U;
     /* Set MTIOC6A pin */
-    MPC.PE7PFS.BYTE = 0x08U;
-    PORTE.PMR.BYTE |= 0x80U;
+    //MPC.PE7PFS.BYTE = 0x08U;
+    //PORTE.PMR.BYTE |= 0x80U;
     /* Set MTIOC6B pin */
-    MPC.PA5PFS.BYTE = 0x08U;
-    PORTA.PMR.BYTE |= 0x20U;
+    //MPC.PA5PFS.BYTE = 0x08U;
+    //PORTA.PMR.BYTE |= 0x20U;
     /* Set MTIOC6C pin */
-    MPC.PE6PFS.BYTE = 0x08U;
-    PORTE.PMR.BYTE |= 0x40U;
+    //MPC.PE6PFS.BYTE = 0x08U;
+    //PORTE.PMR.BYTE |= 0x40U;
 
-	/* Set MTIOC7B pin */
+    /* Set MTIOC7B pin */
+	/*
+	 * PA1
+	 * PA1:
+	 */
 	MPC.PA1PFS.BYTE = 0x08U;
 	PORTA.PMR.BYTE |= 0x02U;
 
     /* Set MTIOC7A pin */
-    MPC.PA2PFS.BYTE = 0x08U;
-    PORTA.PMR.BYTE |= 0x04U;
+    /*
+     * PA2, P67, P66
+     */
+    //MPC.PA2PFS.BYTE = 0x08U;
+    //PORTA.PMR.BYTE |= 0x04U;
     /* Set MTIOC7C pin */
-    MPC.P67PFS.BYTE = 0x08U;
-    PORT6.PMR.BYTE |= 0x80U;
+    //MPC.P67PFS.BYTE = 0x08U;
+    //PORT6.PMR.BYTE |= 0x80U;
     /* Set MTIOC7D pin */
-    MPC.P66PFS.BYTE = 0x08U;
-    PORT6.PMR.BYTE |= 0x40U;
+    //MPC.P66PFS.BYTE = 0x08U;
+    //PORT6.PMR.BYTE |= 0x40U;
 }
 
 /***********************************************************************************************************************

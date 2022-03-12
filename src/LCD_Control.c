@@ -2649,7 +2649,31 @@ void boot_screen(void)
     strcat(tempstr, "lmt*");
   }
 #else
-  strcpy(tempstr, "****************");
+  //strcpy(tempstr, "****************");	// 16 chars
+  str_chg_long3(tempstr, 6, serial_number);		// 6 chars
+  strcat(tempstr, "******");
+  switch (strlen(mac_addr))
+  {
+  case 0:
+	  strcpy(tempstr2,"0000");
+	  break;
+  case 1:
+	  strcpy(tempstr2,"000");
+	  strcat(tempstr2,mac_addr);
+	  break;
+  case 2:
+	  strcpy(tempstr2,"00");
+	  strcat(tempstr2,mac_addr);
+	  break;
+  case 3:
+	  strcpy(tempstr2,"0");
+	  strcat(tempstr2,mac_addr);
+	  break;
+  case 4:
+	  strcpy(tempstr2,mac_addr);
+	  break;
+  }
+  strcat(tempstr, tempstr2);	// 4 Chars
 #endif
   write_lcd(tempstr);
   set_cursor(LINE2, 0, NOCURSOR);

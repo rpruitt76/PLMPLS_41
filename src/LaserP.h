@@ -385,6 +385,9 @@ extern void DateEntryScrn(void);
 extern void TimeEntryScrn(void);
 extern char* getTimeStr( void );
 extern char* getDateStr( void );
+extern bool tst_laser_active( void );
+extern void Wr_MacAddrmonitor( char* parm1);
+extern void Rd_MacAddrmonitor( char* parm1);
 
 #ifdef TST_PATCH
 extern unsigned char MonitorParse(void);
@@ -507,6 +510,8 @@ extern unsigned long        opmin_lmt;		 	 // Number minutes to limit operation.
 #endif
 #define	 LEASE_STR_LEN		13			// Frequency String Length...lser1_strng
 extern char				    lease_str[LEASE_STR_LEN];
+extern char					mac_addr[8];
+extern const char			emac_addr[8];
 extern const unsigned long		eserial_number;			 // Serial Number of unit.
 extern unsigned long		serial_number;			 // Serial Number of unit.
 

@@ -130,6 +130,7 @@
 		 char				save_str[17];
 		 char				dig_str[4];	   			 // Permanent string for digit calculations.
 		 char				lease_str[LEASE_STR_LEN];
+		 char				mac_addr[8];			// Saves Mac Address from Monitor Command
 
 #ifdef DEBUGGR
 		 uchar				debug_buffr[512];
@@ -206,6 +207,7 @@
   		const unsigned char		eetmp3 = 3;				 	 // EE Place Holder
   		const unsigned char		eetmp4 = 4;				 	 // EE Place Holder
   		const unsigned char		eetmp5 = 5;				 	 // EE Place Holder
+  		const char				emac_addr[8] = {0, 0, 0, 0, 0, 0, 0, 0};	// Saved Mac Address.
 //		 Program 0
 //  		const struct laseru_entry laser0_data = {0, 0, 0, 0, BLANK_SHRTSTRNG, 0};
 //  		const struct laseru_entry laser0_data = {1, 2, 3, 4, "Program 0", 1};
