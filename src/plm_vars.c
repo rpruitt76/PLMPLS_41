@@ -130,6 +130,7 @@
 		 char				save_str[17];
 		 char				dig_str[4];	   			 // Permanent string for digit calculations.
 		 char				lease_str[LEASE_STR_LEN];
+	  	 char				PlaceHldrB[4];		 	 // Place Holder
 		 char				mac_addr[8];			// Saves Mac Address from Monitor Command
 
 #ifdef DEBUGGR
