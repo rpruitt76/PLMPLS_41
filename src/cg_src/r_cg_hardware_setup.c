@@ -92,6 +92,7 @@ void R_Systeminit(void)
     R_CMT0_Create();
     R_RTC_Create();
     R_RTC_Start();			// Start RTC 5/23/15 RP
+    R_SCI2_Create();		// Start SCI2 6/8/2022 RP
     R_SCI5_Create();		// Start SCI5 11/12/2020 RP
     R_SCI6_Create();		// Start SCI6 11/12/2020 RP
     R_S12AD0_Create();
@@ -154,6 +155,7 @@ void HardwareWakeup(void)
     R_TMR_Create();
     R_CMT0_Create();
     R_RTC_Start();			// Start RTC 5/23/15 RP
+    R_SCI2_Create();		// Start SCI2 6/8/2022 RP
     R_SCI5_Create();		// Start SCI5 11/12/2020 RP
     R_SCI6_Create();		// Start SCI6 11/12/2020 RP
     R_S12AD0_Create();

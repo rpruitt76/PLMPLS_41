@@ -214,6 +214,13 @@ void R_MAIN_UserInit(void)
 		printf2("ERROR: R_SCI5_Enable() Failed!!\n");
 	R_SCI5_Create();
 	R_SCI5_Start();
+	// Initialize and start SCI2....6/8/2022 RP
+	if (R_SCI2_Setup() != 0)		// Setup callbacks for SCI2.
+		printf2("ERROR: R_SCI2_Setup() Failed!!\n");
+	if (R_SCI2_Enable() != 0)		// Enable Ints for SCI2.
+		printf2("ERROR: R_SCI2_Enable() Failed!!\n");
+	R_SCI2_Create();
+	R_SCI2_Start();
 
 	// Initialize and start SCI6/SPI.
 	StrmOn = 1;
@@ -390,6 +397,8 @@ void main_plm(void)
   // Init Receive for Monitor....Prime Buffer
   tempchar = 0x00;
   R_SCI5_Serial_Rceive( &tempchar, RX_CHAR);
+  // Prime Buffer SCI2...6/7/2022 RP
+  R_SCI2_Serial_Rceive( &tempchar, RX_CHAR);
 
   // Enable Streaming for Monitor
    	StrmOn = 1;
@@ -5360,6 +5369,20 @@ void main_plm(void)
 			parm1[x] = 0x00;
 		}
 	} // EndIf (R_SCI5_Serial_Rceive( tempchar, RX_CHAR) == 0x00)
+	if (R_SCI2_Serial_Rceive( tmpString, RX_STRING2) == 0x00)
+	{
+		sscanf(tmpString,"%s %s",cmdString, parm1);
+		strcpy(tmpString, "");
+		MonitorParse2 (cmdString, parm1);
+		// Clean out Buffers and reset.
+		//tempString_ptr = tmpString;
+		for (x=0; x<80; x++)
+		{
+			tmpString[x] = 0x00;
+			cmdString[x] = 0x00;
+			parm1[x] = 0x00;
+		}
+	} // EndIf (R_SCI2_Serial_Rceive( tempchar, RX_CHAR) == 0x00)
 #endif
   } // MAIN_END End While
 }

@@ -185,7 +185,19 @@ void  MonitorTask (void)
         			*tempString_ptr++ = tempchar;
         		} // EndIf (*tempchar != 0x00)
         	} // EndIf (R_SCI5_Serial_Rceive( tempchar, RX_CHAR) == 0x00)
-        } //EndWhile (tempchar[0] != 0x0d)
+        	/**********************************
+        	 *
+        	 * Add code to Receive Msg from SCI2...6/7/2022 RP
+        	 *
+        	 *********************************/
+        	if (R_SCI2_Serial_Rceive( &tempchar, RX_CHAR) == 0x00)
+        	{
+        		if (tempchar != 0x00)
+        		{
+        			*tempString_ptr++ = tempchar;
+        		} // EndIf (*tempchar != 0x00)
+        	} // EndIf (R_SCI5_Serial_Rceive( tempchar, RX_CHAR) == 0x00)
+         } //EndWhile (tempchar[0] != 0x0d)
         sscanf(tmpString,"%s %s",cmdString,parm1);
         strcpy(tmpString, "");
   #endif

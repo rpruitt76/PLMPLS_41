@@ -1006,6 +1006,8 @@ void monPrint(char Stat_Cd[], char str[])
 			temp_String[x] = 0x00;
 		sprintf (temp_String, "%s:%s\r\n", Stat_Cd, str);
 		R_SCI5_Serial_Print( temp_String, TX_SEND_WAIT);
+		// Secondary Serial Print to SCI2...6/7/2022 RP
+		R_SCI2_Serial_Print( temp_String, TX_SEND_WAIT);
 		// If string contains a LF, Add CR.
 		//if (strchr(str, '\x0a') != 0)
 		//	R_SCI5_Serial_Print( linefeed, TX_SEND_WAIT);
@@ -1043,9 +1045,15 @@ void printf2(char str[])
 #endif
 #ifdef STRM_COM
 		R_SCI5_Serial_Print( str, TX_SEND_WAIT);
+		// Secondary Serial Print to SCI2...6/7/2022 RP
+		R_SCI2_Serial_Print( str, TX_SEND_WAIT);
 		// If string contains a LF, Add CR.
 		if (strchr(str, '\x0a') != 0)
+		{
 			R_SCI5_Serial_Print( linefeed, TX_SEND_WAIT);
+			// Secondary Serial Print to SCI2...6/7/2022 RP
+			R_SCI2_Serial_Print( linefeed, TX_SEND_WAIT);
+		}
 #endif
 #ifdef STRM_PRINTF
 		printf("%s", str);
