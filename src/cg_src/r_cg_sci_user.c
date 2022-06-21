@@ -44,6 +44,20 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "r_cg_sci.h"
 /* Start user code for include. Do not edit comment generated here */
+extern uint8_t   gp_sci2_tx_errorType;             /* SCI2 Transmit Error Type */
+extern uint8_t   gp_sci2_rx_errorType;             /* SCI2 Receive Error Type */
+extern uint8_t   gp_sci2_tx_state;     /* SCI2 Transmit State */
+extern uint8_t   gp_sci2_rx_state;     /* SCI2 Receive State */
+extern char      gp_sci2_rx_string[RX_BUFFERSIZE];           /* SCI5 Buffer to receive characters */
+extern int       gp_sci2_rx_stringcnt;             /* Count to number characters received */
+
+extern uint8_t   gp_sci4_tx_errorType;             	/* SCI4 Transmit Error Type */
+extern uint8_t   gp_sci4_rx_errorType;             	/* SCI4 Receive Error Type */
+extern uint8_t   gp_sci4_tx_state;    /* SCI4 Transmit State */
+extern uint8_t   gp_sci4_rx_state;    /* SCI4 Receive State */
+extern char      gp_sci4_rx_string[RX_BUFFERSIZE];  /* SCI4 Buffer to receive characters */
+extern int       gp_sci4_rx_stringcnt;             	/* Count to number characters received */
+
 extern uint8_t   gp_sci5_tx_errorType;             /* SCI5 Transmit Error Type */
 extern uint8_t   gp_sci5_rx_errorType;             /* SCI5 Receive Error Type */
 extern char      gp_sci5_rx_string[RX_BUFFERSIZE];           /* SCI5 Buffer to receive characters */
@@ -62,11 +76,27 @@ extern int       gp_sci6_rx_stringcnt;             /* Count to number characters
 /***********************************************************************************************************************
 Global variables and functions
 ***********************************************************************************************************************/
+extern uint8_t * gp_sci2_tx_address;               /* SCI2 transmit buffer address */
+extern uint16_t  g_sci2_tx_count;                  /* SCI2 transmit data number */
+extern uint8_t * gp_sci2_rx_address;               /* SCI2 receive buffer address */
+extern uint16_t  g_sci2_rx_count;                  /* SCI2 receive data number */
+extern uint16_t  g_sci2_rx_length;                 /* SCI2 receive data length */
+
+extern uint8_t * gp_sci4_tx_address;                /* SCI4 send buffer address */
+extern uint16_t  g_sci4_tx_count;                   /* SCI4 send data number */
+extern uint8_t * gp_sci4_rx_address;                /* SCI4 receive buffer address */
+extern uint16_t  g_sci4_rx_count;                   /* SCI4 receive data number */
+extern uint16_t  g_sci4_rx_length;                  /* SCI4 receive data length */
+extern uint8_t	sci4_Tx_Complete;					// SCI4 Tx Complete.
+extern uint8_t	sci4_Rx_Complete;					// SCI4 RX Complete
+extern uint8_t	sci4_Error;							// SCI4 Error.
+
 extern uint8_t * gp_sci5_tx_address;                /* SCI5 send buffer address */
 extern uint16_t  g_sci5_tx_count;                   /* SCI5 send data number */
 extern uint8_t * gp_sci5_rx_address;                /* SCI5 receive buffer address */
 extern uint16_t  g_sci5_rx_count;                   /* SCI5 receive data number */
 extern uint16_t  g_sci5_rx_length;                  /* SCI5 receive data length */
+
 extern uint8_t * gp_sci6_tx_address;                /* SCI6 send buffer address */
 extern uint16_t  g_sci6_tx_count;                   /* SCI6 send data number */
 extern uint8_t * gp_sci6_rx_address;                /* SCI6 receive buffer address */
@@ -80,6 +110,1346 @@ extern uint8_t	sci6_Rx_Complete;					// SCI6 RX Complete
 extern uint8_t	sci6_Error;							// SCI6 Error.
 
 /* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_transmit_interrupt
+* Description  : None
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+#if FAST_INTERRUPT_VECTOR == VECT_SCI2_TXI2
+#pragma interrupt r_sci2_transmit_interrupt(vect=VECT(SCI2,TXI2),fint)
+#else
+#pragma interrupt r_sci2_transmit_interrupt(vect=VECT(SCI2,TXI2))
+#endif
+static void r_sci2_transmit_interrupt(void)
+{
+#ifdef DEBUGGR
+	debug1(D_SCI2_TXINT);
+#endif
+    if (g_sci2_tx_count > 0U)
+    {
+        SCI2.TDR = *gp_sci2_tx_address;
+        gp_sci2_tx_address++;
+        g_sci2_tx_count--;
+    }
+    else
+    {
+        SCI2.SCR.BIT.TIE = 0U;
+        SCI2.SCR.BIT.TEIE = 1U;
+    }
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_transmitend_interrupt
+* Description  : This function is TEI2 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_sci2_transmitend_interrupt(void)
+{
+#ifdef DEBUGGR
+	debug1(D_SCI2_TXEND);
+#endif
+    MPC.P50PFS.BYTE = 0x00U;
+    PORT5.PMR.BYTE &= 0xFEU;
+    SCI2.SCR.BIT.TIE = 0U;
+    SCI2.SCR.BIT.TE = 0U;
+    SCI2.SCR.BIT.TEIE = 0U;
+
+    r_sci2_callback_transmitend();
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_receive_interrupt
+* Description  : None
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+#if FAST_INTERRUPT_VECTOR == VECT_SCI2_RXI2
+#pragma interrupt r_sci2_receive_interrupt(vect=VECT(SCI2,RXI2),fint)
+#else
+#pragma interrupt r_sci2_receive_interrupt(vect=VECT(SCI2,RXI2))
+#endif
+static void r_sci2_receive_interrupt(void)
+{
+	if (Special_SCI_State == 0)
+	{
+		if (g_sci2_rx_length > g_sci2_rx_count)
+		{
+			while ((SCI2.SSR.BYTE & 0x40) > 0)
+			{
+				*gp_sci2_rx_address = SCI2.RDR;
+				gp_sci2_rx_address++;
+				g_sci2_rx_count++;
+			}
+
+			if (g_sci2_rx_length <= g_sci2_rx_count)
+			{
+				r_sci2_callback_receiveend();
+			}
+		}
+    }
+    else
+    {
+    	r_sci2_callback_receiveend();
+    }
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_receiveerror_interrupt
+* Description  : This function is ERI2 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_sci2_receiveerror_interrupt(void)
+{
+    uint8_t err_type;
+
+    /* Clear overrun, framing and parity error flags */
+    err_type = SCI2.SSR.BYTE;
+    err_type &= 0xC7U;
+    err_type |= 0xC0U;
+    SCI2.SSR.BYTE = err_type;
+}
+/***********************************************************************************************************************
+* Function Name: r_sci2_callback_transmitend
+* Description  : This function is a callback function when SCI2 finishes transmission.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+static void r_sci2_callback_transmitend(void)
+{
+    /* Start user code. Do not edit comment generated here */
+    gp_sci2_tx_state = TX_COMPLETE;
+    /* End user code. Do not edit comment generated here */
+}
+/***********************************************************************************************************************
+* Function Name: r_sci2_callback_receiveend
+* Description  : This function is a callback function when SCI2 finishes reception.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+static void r_sci2_callback_receiveend(void)
+{
+	//int x;
+	//int temp1;
+	char tempChar;
+    /* Start user code. Do not edit comment generated here */
+	if (Special_SCI_State == 0)
+	{
+		gp_sci2_rx_state = RX_RECEIVED;
+	}
+	else
+	{
+		// Special RX_STRING2 mode		****HERE****
+		// Transfer contents of received characters to buffer
+		while ((SCI2.SSR.BYTE & 0x40) > 0)
+		{
+			// Transfer character to buffer
+			tempChar = SCI2.RDR;
+			gp_sci2_rx_string[gp_sci2_rx_stringcnt++] = tempChar;
+			// Test for completion character
+			if (tempChar == 0x0d)
+			{
+				gp_sci2_rx_state = RX_MSG_READY;
+				// We are done...Clear Buffer
+		    	while ((SCI2.SSR.BYTE & 0x40) > 0)
+		    	{
+		    		tempChar = SCI2.RDR;
+		    	}
+			}
+		}
+		if(gp_sci2_rx_state != RX_MSG_READY)
+		{
+			// Restart Reception
+			R_SCI2_Serial_Receive((uint8_t *)Temp_String, 1); // Receive one character at a time.
+		}
+	}
+    /* End user code. Do not edit comment generated here */
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+//*****************************************************************************
+//*
+//* routine: R_SCI2_Serial_Print
+//* Date:    May 13, 2022
+//* Author:  Ralph Pruitt
+//* SCI2 Serial Send Command
+//*
+//*****************************************************************************
+unsigned char R_SCI2_Serial_Print( char str[], unsigned char task_cmd)
+{
+	MD_STATUS err;
+
+#ifdef DEBUGGR
+	debug1(D_SCI2_PRINT);
+#endif
+
+//	int tempcnt;
+//  OS_ERR  err;
+  if(task_cmd == TX_STATUS)
+  {
+    return(gp_sci2_tx_state);
+  }
+  else if(task_cmd == TX_SEND)
+  {
+    // Test Transmit flag and only fill buffer if flag is clear
+    if(gp_sci2_tx_state != TX_BUSY)
+    {
+      // Clear Transmit flag for transmission
+      gp_sci2_tx_errorType = 0x00;
+      // Start Transmission
+      gp_sci2_tx_state = TX_BUSY;
+      //printf("***R_SCI5_Serial_Send str:%s Length:%d\n", str, strlen(str));
+      if(strlen(str) > 0)
+      {
+          err = R_SCI2_Serial_Send((uint8_t *) str, (uint16_t)strlen(str));
+          //printf(" ERR: %d\n", err);
+          if (err > 0)
+          {
+        	  gp_sci2_tx_state = TX_COMPLETE;
+        	  return TX_ERRORCD;
+          }
+      }
+      else
+      {
+    	  gp_sci2_tx_state = TX_COMPLETE;
+    	  return TX_ERRORCD;
+      }
+      return(0x00);
+    }
+    else
+      return(TX_BUSY);
+  }
+  else if(task_cmd == TX_SEND_WAIT)
+  {
+    // Test Transmit flag and only fill buffer if flag is clear
+    if(gp_sci2_tx_state != TX_BUSY)
+    {
+      // Clear Transmit flag for transmission
+      gp_sci2_tx_errorType = 0x00;
+      // Start Transmission
+      gp_sci2_tx_state = TX_BUSY;
+      //printf("***R_SCI5_Serial_Send str:%s Length:%d\n", str, strlen(str));
+      if(strlen(str) > 0)
+      {
+          err = R_SCI2_Serial_Send((uint8_t *) str, (uint16_t)strlen(str));
+          //printf(" ERR: %d\n", err);
+          if (err > 0)
+          {
+        	  gp_sci2_tx_state = TX_COMPLETE;
+        	  return TX_ERRORCD;
+          }
+      }
+      else
+      {
+    	  gp_sci2_tx_state = TX_COMPLETE;
+    	  return TX_ERRORCD;
+      }
+//      tempcnt = 0;
+      while( gp_sci2_tx_state == TX_BUSY)
+      {
+        // Wait 5 msec
+//        OSTimeDlyHMSM(0u, 0u, 0u, 50,
+//                    OS_OPT_TIME_HMSM_STRICT,
+//                    &err);
+    	  accurate_delay(5);
+//    	  tempcnt++;
+/*    	  if(tempcnt>50)
+    	  {
+    		  // Reinitialize the SCI Port. It is hung.
+    		  R_SCI5_Create();
+    		  R_SCI5_Start();
+    		  gp_sci5_tx_state = TX_COMPLETE;
+    		  return(0xff);
+    	  } */
+      }
+      return(0x00);
+    }
+    else
+      return(TX_BUSY);
+  }
+  else
+    return(0xff);
+}
+
+//*****************************************************************************
+//*
+//* routine: R_SCI2_Serial_Receive
+//* Date:    May 13, 2022
+//* Author:  Ralph Pruitt
+//* SCI2 Serial Receive Command
+//*
+//*****************************************************************************
+unsigned char R_SCI2_Serial_Rceive( char str[], unsigned char task_cmd)
+{
+//  OS_ERR  err;
+  int x;
+  if(task_cmd == RX_STATUS)
+  {
+    return(gp_sci2_rx_state);
+  }
+  else if(task_cmd == RX_ERRORCD)
+  {
+    return(gp_sci2_rx_errorType);
+  }
+  else if(task_cmd == RX_STRING)
+  {
+	Special_SCI_State = 0;
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci2_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci2_rx_string[x] = 0x00;
+      gp_sci2_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receie one character at a time.
+      gp_sci2_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci2_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      for(x=0; x<g_sci2_rx_count; x++)
+      {
+        // Transfer character to buffer
+        gp_sci2_rx_string[gp_sci2_rx_stringcnt++] = gp_sci2_rx_address[x];
+        // Test for completion character
+        if (gp_sci2_rx_address[x] == 0x0d)
+          gp_sci2_rx_state = RX_MSG_READY;
+      }
+      if(gp_sci2_rx_state != RX_MSG_READY)
+      {
+        // Restart Reception
+        R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+        gp_sci2_rx_state = RX_BUSY;
+      }
+      return(RX_BUSY);
+    }
+    else if(gp_sci2_rx_state == RX_MSG_READY)
+    {
+      for(x=0; x<gp_sci2_rx_stringcnt; x++)
+        str[x] = gp_sci2_rx_string[x];
+      gp_sci2_rx_state = RX_COMPLETE;
+      return(RX_COMPLETE);
+    }
+    else if(gp_sci2_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+
+  } // END of RX_STRING Processing
+  else if(task_cmd == RX_STRING2)
+  {
+	Special_SCI_State = 1;			//   ****HERE****
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci2_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci2_rx_string[x] = 0x00;
+      for(x = 0; x<5; x++)
+        Temp_String[x] = 0x00;
+      gp_sci2_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI2_Serial_Receive((uint8_t *) Temp_String, 1); // Receive one character at a time.
+      gp_sci2_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci2_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      for(x=0; x<g_sci2_rx_count; x++)
+      {
+        // Transfer character to buffer
+        gp_sci2_rx_string[gp_sci2_rx_stringcnt++] = gp_sci2_rx_address[x];
+        // Test for completion character
+        if (gp_sci2_rx_address[x] == 0x0d)
+          gp_sci2_rx_state = RX_MSG_READY;
+      }
+      if(gp_sci2_rx_state != RX_MSG_READY)
+      {
+        // Restart Reception
+        R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+        gp_sci2_rx_state = RX_BUSY;
+      }
+      return(RX_BUSY);
+    }
+    else if(gp_sci2_rx_state == RX_MSG_READY)
+    {
+      for(x=0; x<gp_sci2_rx_stringcnt; x++)
+        str[x] = gp_sci2_rx_string[x];
+      gp_sci2_rx_state = RX_COMPLETE;
+      return(RX_COMPLETE);
+    }
+    else if(gp_sci2_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+
+  } // END of RX_STRING Processing
+  else if(task_cmd == RX_STRING_WAIT)
+  {
+	Special_SCI_State = 0;
+	// Enable Interrupts just in case...
+	SEI();
+	// Clear buffer before starting next Receive cycle.
+	for (x=0; x<5; x++)
+		str[x] = SCI2.RDR;
+	gp_sci2_rx_state = RX_COMPLETE;
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci2_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci2_rx_string[x] = 0x00;
+      gp_sci2_rx_stringcnt = 0;
+
+      // Start Reception
+      gp_sci2_rx_state = RX_BUSY;
+      R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receie one character at a time.
+      while( gp_sci2_rx_state != RX_COMPLETE)
+      {
+        // Wait 10 msec
+        //OSTimeDlyHMSM(0u, 0u, 0u, 10,
+        //            OS_OPT_TIME_HMSM_STRICT,
+        //            &err);
+        if(gp_sci2_rx_state == RX_RECEIVED)
+        {
+          // Transfer contents of received characters to buffer
+          for(x=0; x<g_sci2_rx_count; x++)
+          {
+            // Transfer character to buffer
+            gp_sci2_rx_string[gp_sci2_rx_stringcnt++] = str[x];
+            // Test for completion character
+            if (str[x] == 0x0d)
+            {
+              gp_sci2_rx_state = RX_MSG_READY;
+            }
+          }
+          if(gp_sci2_rx_state == RX_RECEIVED)
+          {
+            // Restart Reception
+            gp_sci2_rx_state = RX_BUSY;
+            R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+          }
+        } // EndIf(gp_sci5_rx_state == RX_RECEIVED)
+        else if(gp_sci2_rx_state == RX_MSG_READY)
+        {
+          for(x=0; x<gp_sci2_rx_stringcnt; x++)
+            str[x] = gp_sci2_rx_string[x];
+          gp_sci2_rx_state = RX_COMPLETE;
+        } // EndElse (gp_sci2_rx_state == RX_RECEIVED)
+      } // EndWhile ( gp_sci2_rx_state != RX_COMPLETE)
+      return(0x00);
+    } // EndIf ((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    else
+      // Can't task if we are busy with another event.
+      return(0xff);
+  } // END of RX_STRING_WAIT Processing
+  else if(task_cmd == RX_CHAR)
+  {
+	Special_SCI_State = 0;
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci2_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      gp_sci2_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receie one character at a time.
+      gp_sci2_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci2_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      gp_sci2_rx_state = RX_COMPLETE;
+      return(0);
+    }
+    else if(gp_sci2_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+  } // END of RX_CHAR Processing
+  else if(task_cmd == RX_CHAR_WAIT)
+  {
+	Special_SCI_State = 0;
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci2_rx_state == RX_COMPLETE) || (gp_sci2_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci2_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      gp_sci2_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI2_Serial_Receive((uint8_t *) str, 1); // Receie one character at a time.
+      gp_sci2_rx_state = RX_BUSY;
+      while( gp_sci2_tx_state != RX_COMPLETE)
+      {
+        // Wait 10 msec
+        //OSTimeDlyHMSM(0u, 0u, 0u, 10,
+        //            OS_OPT_TIME_HMSM_STRICT,
+        //            &err);
+        if(gp_sci2_rx_state == RX_RECEIVED)
+        {
+          // Transfer contents of received characters to buffer
+            gp_sci2_rx_state = RX_COMPLETE;
+        }
+      }
+      return(0x00);
+    }
+    else
+      // Can't task if we are busy with another event.
+      return(0xff);
+  } // END of RX_CHAR_WAIT Processing
+  else
+    return(0xff);
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_Setup
+* Description  : This sets up all needed callbacks for the BSP
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI2_Setup( void)
+{
+	bsp_int_err_t err;
+
+	// Init Special State.
+	Special_SCI_State = 0;
+
+	/* Register Transmit end _callback() to be called whenever a SCI5 Transmit ends. */
+	err = R_BSP_InterruptWrite(BSP_INT_SRC_BL0_SCI2_TEI2, (bsp_int_cb_t)r_sci2_transmitend_interrupt);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Register Receive Error _callback() to be called whenever a SCI5 Receive Error occurs. */
+	err = R_BSP_InterruptWrite(BSP_INT_SRC_BL0_SCI2_ERI2, (bsp_int_cb_t)r_sci2_receiveerror_interrupt);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	// Set internal States ready for operation.
+	gp_sci2_tx_state = TX_COMPLETE;
+	gp_sci2_rx_state = RX_COMPLETE;
+
+	return 0;
+
+}
+
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_Enable
+* Description  : This Enables Group Interrupts.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI2_Enable( void)
+{
+	bsp_int_err_t err;
+	bsp_int_ctrl_t data1;
+
+	data1.ipl = 5;	// Set Priority to 5.
+
+	/* Enable SCI5 Transmit ends Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI2_TEI2,
+								BSP_INT_CMD_GROUP_INTERRUPT_ENABLE,
+								(void *)&data1);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Enable SCI5 Receive Error Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI2_ERI2,
+								BSP_INT_CMD_GROUP_INTERRUPT_ENABLE,
+								(void *)&data1);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	return 0;
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci2_Disable
+* Description  : This Enables Group Interrupts.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI2_Disable( void)
+{
+	bsp_int_err_t err;
+
+
+	/* Enable SCI5 Transmit ends Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI2_TEI2,
+								BSP_INT_CMD_GROUP_INTERRUPT_DISABLE,
+								FIT_NO_PTR);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Enable SCI5 Receive Error Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI2_ERI2,
+								BSP_INT_CMD_GROUP_INTERRUPT_DISABLE,
+								FIT_NO_PTR);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	return 0;
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci4_transmit_interrupt
+* Description  : None
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+#if FAST_INTERRUPT_VECTOR == VECT_SCI4_TXI4
+#pragma interrupt r_sci4_transmit_interrupt(vect=VECT(SCI4,TXI4),fint)
+#else
+#pragma interrupt r_sci4_transmit_interrupt(vect=VECT(SCI4,TXI4))
+#endif
+static void r_sci4_transmit_interrupt(void)
+{
+    if (g_sci4_tx_count > 0U)
+    {
+        SCI4.TDR = *gp_sci4_tx_address;
+        gp_sci4_tx_address++;
+        g_sci4_tx_count--;
+    }
+    else
+    {
+        SCI4.SCR.BIT.TIE = 0U;
+        SCI4.SCR.BIT.TEIE = 1U;
+    }
+}
+/***********************************************************************************************************************
+* Function Name: r_sci4_transmitend_interrupt
+* Description  : This function is TEI4 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_sci4_transmitend_interrupt(void)
+{
+#ifdef DEBUGGR
+	debug1(D_SCI5_TXEND);
+#endif
+    /* Clear SMOSI4 pin */
+	// Section 23.2.2 P0n Pin Function Control Register (PBnPFS) (n = 0 to 3, 5, 7)
+    MPC.PB1PFS.BYTE = 0x00U;	//
+    PORTB.PMR.BYTE &= 0xFDU;
+
+    SCI6.SCR.BIT.TIE = 0U;
+    SCI6.SCR.BIT.TE = 0U;
+    SCI6.SCR.BIT.TEIE = 0U;
+
+    r_sci4_callback_transmitend();
+}
+/***********************************************************************************************************************
+* Function Name: r_sci4_receive_interrupt
+* Description  : None
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+#if FAST_INTERRUPT_VECTOR == VECT_SCI4_RXI4
+#pragma interrupt r_sci4_receive_interrupt(vect=VECT(SCI4,RXI4),fint)
+#else
+#pragma interrupt r_sci4_receive_interrupt(vect=VECT(SCI4,RXI4))
+#endif
+static void r_sci4_receive_interrupt(void)
+{
+	if (g_sci4_rx_length > g_sci4_rx_count)
+	{
+		while ((SCI4.SSR.BYTE & 0x40) > 0)
+		{
+			*gp_sci4_rx_address = SCI4.RDR;
+			gp_sci4_rx_address++;
+			g_sci4_rx_count++;
+		}
+
+		if (g_sci4_rx_length <= g_sci4_rx_count)
+		{
+			r_sci4_callback_receiveend();
+		}
+	}
+}
+/***********************************************************************************************************************
+* Function Name: r_sci4_receiveerror_interrupt
+* Description  : This function is ERI4 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_sci4_receiveerror_interrupt(void)
+{
+    uint8_t err_type;
+
+    /* Clear overrun, framing and parity error flags */
+    err_type = SCI4.SSR.BYTE;
+    err_type &= 0xC7U;
+    err_type |= 0xC0U;
+    SCI4.SSR.BYTE = err_type;
+}
+/***********************************************************************************************************************
+* Function Name: r_sci4_callback_transmitend
+* Description  : This function is a callback function when SCI4 finishes transmission.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+static void r_sci4_callback_transmitend(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	gp_sci4_tx_state = TX_COMPLETE;
+    /* End user code. Do not edit comment generated here */
+}
+/***********************************************************************************************************************
+* Function Name: r_sci4_callback_receiveend
+* Description  : This function is a callback function when SCI4 finishes reception.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+static void r_sci4_callback_receiveend(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	char tempChar;
+
+	// Transfer contents of received characters to buffer
+	while ((SCI4.SSR.BYTE & 0x40) > 0) {
+		// Transfer character to buffer
+		tempChar = SCI4.RDR;
+		gp_sci4_rx_string[gp_sci4_rx_stringcnt++] = tempChar;
+		// Test for completion character
+		if (tempChar == 0x0d) {
+			gp_sci4_rx_state = RX_MSG_READY;
+			// We are done...Clear Buffer
+			while ((SCI4.SSR.BYTE & 0x40) > 0) {
+				tempChar = SCI4.RDR;
+			}
+		}
+	}
+	if (gp_sci4_rx_state != RX_MSG_READY) {
+		// Restart Reception
+		R_SCI4_Serial_Receive((uint8_t*) Temp_String, 1);// Receive one character at a time.
+	}
+}
+
+/***********************************************************************************************************************
+* Function Name: R_SCI4_SPI_Send
+* Description  : This function Sets up the SCI4 port for SPI Communication and sends the passed string. It also is used
+* to collect ata from the receive side of the SPI Port.
+* Arguments    : uint8_t str[]: 	Passed Buffer of Bytes to send to the SPI Port.
+* 				 int wrtLen:		Number of Bytes to transmit.
+* 				 uint8_t retStr[]:	Pointer to Buffer for receive Traffic.
+* 				 int rdLen:			Number of Bytes to receive from SPI Bus
+* Return Value : MD_STATUS:			TX_BUSY(1):		SPI BUS Busy...Can't Task
+* 									TX_COMPLETE(0):	Successful Send and Receive of SPI Data.
+* 									TX_ERRORCD(3):	Error occurred when Tasking SPI Command.
+***********************************************************************************************************************/
+unsigned char R_SCI4_SPI_Send( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen )
+{
+	MD_STATUS err;
+
+#ifdef DEBUGGR
+	debug1(D_SCI5_PRINT);
+#endif
+		// Test Transmit flag and only fill buffer if flag is clear
+		if (gp_sci4_tx_state != TX_BUSY) {
+			// Clear Transmit flag for transmission
+			gp_sci4_tx_errorType = 0x00;
+			// Start Transmission
+			gp_sci4_tx_state = TX_BUSY;
+			//printf("***R_SCI4_Serial_Send str:%s Length:%d\n", str, strlen(str));
+			if (wrtLen > 0) {
+				err = R_SCI4_SPI_Master_Send_Receive((uint8_t*)str, wrtLen, (uint8_t*)retStr, rdLen);
+				/*err = R_SCI4_Serial_Send((uint8_t*) str,
+						(uint16_t) strlen(str)); */
+				//printf(" ERR: %d\n", err);
+				if (err > 0) {
+					gp_sci4_tx_state = TX_COMPLETE;
+					return TX_ERRORCD;
+				}
+			} else {
+				gp_sci4_tx_state = TX_COMPLETE;
+				return TX_ERRORCD;
+			}
+			while (gp_sci4_tx_state == TX_BUSY) {
+				// Wait 10 usec
+				short_delay(10);
+			}
+			return (0x00);
+		} else
+			return (TX_BUSY);
+}
+
+/***********************************************************************************************************************
+* Function Name: R_SCI4_SPI_Receive
+* Description  : This function Sets up the SCI4 port for SPI Communication and sends the passed string. It also is used
+* to collect ata from the receive side of the SPI Port.
+* Arguments    : uint8_t str[]: 	Passed Buffer of Bytes to send to the SPI Port.
+* 				 int wrtLen:		Number of Bytes to transmit.
+* 				 uint8_t retStr[]:	Pointer to Buffer for receive Traffic.
+* 				 int rdLen:			Number of Bytes to receive from SPI Bus
+* Return Value : MD_STATUS:			TX_BUSY(1):		SPI BUS Busy...Can't Task
+* 									TX_COMPLETE(0):	Successful Send and Receive of SPI Data.
+* 									TX_ERRORCD(3):	Error occurred when Tasking SPI Command.
+***********************************************************************************************************************/
+#define SPI_DELAY_USEC	5		// Set Delay to 5 usec per transition on Clock
+unsigned char R_SCI4_SPI_Receive( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen )
+{
+	//MD_STATUS err;
+	int tmpByte, tmpWrt, tmpRd;
+	//int BlkRd;
+	uint8_t TempWrtData, TempRdData, TmpValue;
+
+#ifdef DEBUGGR
+	debug1(D_SCI5_PRINT);
+#endif
+		// Test Transmit flag and only fill buffer if flag is clear
+		if (gp_sci4_tx_state != TX_BUSY) {
+			// Clear Transmit flag for transmission
+			gp_sci4_tx_errorType = 0x00;
+			// Start Transmission
+			gp_sci4_tx_state = TX_BUSY;
+			//printf("***R_SCI4_Serial_Send str:%s Length:%d\n", str, strlen(str));
+			if (wrtLen > 0) {
+			    /**********************************************
+			     *
+			     * 		Code to Bit Bang Interface for Receive.
+			     *
+			     **********************************************/
+			    /*
+			     * 	1. Enable SPI_SDI, SPI_SDO, and SPI_SCK as IO Pins.
+			     */
+			    /* Set SPI_SDO / SMISO4 pin 	PG810 */
+			    PORTB.PMR.BIT.B0 = 0x00;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB0: Uses the pin as a general I/O pin.
+			    PORTB.PDR.BIT.B0 = 0x00;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB0: Input (Functions as an input pin.)
+			    /* Set SPI_SDI / SMOSI4 pin  	PG810 */
+			    PORTB.PODR.BIT.B1 = 0;		// 22.3.2 Port Output Data Register (PODR)(Pg 783)	PB1: Set Bit Low
+			    PORTB.PMR.BIT.B1 = 0x00;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB1: Uses the pin as a general I/O pin.
+			    PORTB.PDR.BIT.B1 = 0x01;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB1: OUTPUT
+			    /* Set SPI_SCK / SCK4 pin 		PG810 */
+			    PORTB.PODR.BIT.B3 = 1;		// 22.3.2 Port Output Data Register (PODR)(Pg 783)	PB3: Set Bit High
+			    PORTB.PMR.BIT.B3 = 0x00;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB3: Uses the pin as a general I/O pin.
+			    PORTB.PDR.BIT.B3 = 0x01;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB3: OUTPUT
+
+			    /*
+			     * 	2. Bit Bang Data through IO Pins
+			     */
+			    // Set Key Variables for Accumulation of data.
+			    tmpRd = 0;
+
+			    // Start Outside Loop
+			    for (tmpWrt=0; tmpWrt<wrtLen; tmpWrt++)
+			    {
+			    	TempWrtData = *str;
+			    	TempRdData = 0;
+			    	// Setup Inside Loop
+			    	for (tmpByte=0; tmpByte<8; tmpByte++)
+			    	{
+			    		// Rotate TempRdData to the left by 1 bit.
+		    			TempRdData = TempRdData << 1;
+			    		// Set CLK Low.
+			    		PORTB.PODR.BIT.B3 = 0;		// PB3(SCK)(Pin 82): LOW
+			    		// Read MSB Bit and determine if it is high.
+			    		if ((TempWrtData & 0x80) > 0)
+			    			PORTB.PODR.BIT.B1 = 1;		// SPI_SDI PB1(MOSI)(Pin 84): HIGH
+			    		else
+			    			PORTB.PODR.BIT.B1 = 0;		// SPI_SDI PB1(MOSI)(Pin 84): LOW
+			    		// Now Rotate TempWrtData to the left by 1 bit.
+			    		TempWrtData = TempWrtData << 1;
+			    		// Wait SPI_DELAY_USEC usec
+			    		short_delay(SPI_DELAY_USEC);
+			    		// Set Clock High
+			    		PORTB.PODR.BIT.B3 = 1;		// PB3(SCK)(Pin 82): HIGH
+			    		// Wait SPI_DELAY_USEC usec
+			    		short_delay(SPI_DELAY_USEC);
+			    		// Determine if we need to sample Read Bit
+			    		if (tmpRd < rdLen)
+			    		{
+			    			// Read Input Pin and determine logic
+			    			TmpValue = PORTB.PIDR.BIT.B0;	// read SPI_SDO PB0(MISO).
+			    			if (TmpValue)
+			    				TempRdData |= 1;	// Rotate in Value of High.
+			    			else
+			    				TempRdData |= 0;	// Rotate in Value of Low.
+			    		} // EndIf (tmpRd < rdLen)
+			    	} // EndFor (tmpByte=0; tmpByte<8; tmpByte++)
+			    	// Byte has been written and read...Time to update varaibles.
+			    	str++;
+		    		if (tmpRd < rdLen)
+		    		{
+		    			*retStr = TempRdData;
+		    			retStr++;
+		    			tmpRd++;
+		    		} // EndIf (tmpRd < rdLen)
+			    } // EndFor (tmpWrt=0; tmpWrt<wrtLen; tmpWrt++)
+
+			    /*
+			     *  3. Reset SPI_SDI, SPI_SDO, and SPI_SCK as SPI BUS Pins.
+			     */
+			    /* Set SPI_SDO / SMISO4 PB0(MISO)(Pin 87) 	PG810 */
+			    PORTB.PMR.BIT.B0 = 0x01;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB0: Uses the pin as a general I/O pin.
+			    PORTB.PDR.BIT.B0 = 0x00;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB0: Input (Functions as an input pin.)
+			    /* Set TXD6 / SMOSI4 PB1(MOSI)(Pin 84)  	PG810 */
+			    PORTB.PODR.BIT.B1 = 0;		// 22.3.2 Port Output Data Register (PODR)(Pg 783)	PB1: Set Bit Low
+			    PORTB.PMR.BIT.B1 = 0x01;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB1: Alternate Function.
+			    PORTB.PDR.BIT.B1 = 0x01;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB1: OUTPUT
+			    /* Set NONE / SCK4 PB3(SCK)(Pin 82) 		PG810 */
+			    PORTB.PODR.BIT.B3 = 1;		// 22.3.2 Port Output Data Register (PODR)(Pg 783)	PB3: Set Bit High
+			    PORTB.PMR.BIT.B3 = 0x01;	// 22.3.4 Port Mode Register (PMR)(Pg 785)	PB3: Alternate Function.
+			    PORTB.PDR.BIT.B3 = 0x01;	// 22.3.1 Port Direction Register (PDR)(Pg 782)	PB3: OUTPUT
+
+			    gp_sci4_tx_state = TX_COMPLETE;
+				return MD_OK;
+			} else {
+				gp_sci4_tx_state = TX_COMPLETE;
+				return TX_ERRORCD;
+			}
+		} else
+			return (TX_BUSY);
+}
+
+//*****************************************************************************
+//*
+//* routine: R_SCI4_Serial_Print
+//* Date:    May 19, 2022
+//* Author:  Ralph Pruitt
+//* SCI6 Serial Send Command
+//*
+//*****************************************************************************
+unsigned char R_SCI4_Serial_Print( char str[], unsigned char task_cmd)
+{
+	MD_STATUS err;
+
+#ifdef DEBUGGR
+	debug1(D_SCI5_PRINT);
+#endif
+		// Test Transmit flag and only fill buffer if flag is clear
+		if (gp_sci4_tx_state != TX_BUSY) {
+			// Clear Transmit flag for transmission
+			gp_sci4_tx_errorType = 0x00;
+			// Start Transmission
+			gp_sci4_tx_state = TX_BUSY;
+			//printf("***R_SCI4_Serial_Send str:%s Length:%d\n", str, strlen(str));
+			if (strlen(str) > 0) {
+				err = R_SCI4_Serial_Send((uint8_t*) str,
+						(uint16_t) strlen(str));
+				//printf(" ERR: %d\n", err);
+				if (err > 0) {
+					gp_sci4_tx_state = TX_COMPLETE;
+					return TX_ERRORCD;
+				}
+			} else {
+				gp_sci4_tx_state = TX_COMPLETE;
+				return TX_ERRORCD;
+			}
+			while (gp_sci4_tx_state == TX_BUSY) {
+				// Wait 1 msec
+				accurate_delay(1);
+			}
+			return (0x00);
+		} else
+			return (TX_BUSY);
+//	} else
+//		return (0xff);
+}
+
+//*****************************************************************************
+//*
+//* routine: R_SCI4_Serial_Receive
+//* Date:    May 19, 2022
+//* Author:  Ralph Pruitt
+//* SCI5 Serial Receive Command
+//*
+//*****************************************************************************
+unsigned char R_SCI4_Serial_Rceive( char str[], unsigned char task_cmd)
+{
+//  OS_ERR  err;
+  int x;
+  if(task_cmd == RX_STATUS)
+  {
+    return(gp_sci4_rx_state);
+  }
+  else if(task_cmd == RX_ERRORCD)
+  {
+    return(gp_sci4_rx_errorType);
+  }
+  else if(task_cmd == RX_STRING)
+  {
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci4_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci4_rx_string[x] = 0x00;
+      gp_sci4_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI4_Serial_Receive((uint8_t *) str, 1); // Recieve one character at a time.
+      gp_sci4_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci4_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      for(x=0; x<g_sci4_rx_count; x++)
+      {
+        // Transfer character to buffer
+        gp_sci4_rx_string[gp_sci4_rx_stringcnt++] = gp_sci4_rx_address[x];
+        // Test for completion character
+        if (gp_sci4_rx_address[x] == 0x0d)
+          gp_sci4_rx_state = RX_MSG_READY;
+      }
+      if(gp_sci4_rx_state != RX_MSG_READY)
+      {
+        // Restart Reception
+        R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+        gp_sci4_rx_state = RX_BUSY;
+      }
+      return(RX_BUSY);
+    }
+    else if(gp_sci4_rx_state == RX_MSG_READY)
+    {
+      for(x=0; x<gp_sci4_rx_stringcnt; x++)
+        str[x] = gp_sci4_rx_string[x];
+      gp_sci4_rx_state = RX_COMPLETE;
+      return(RX_COMPLETE);
+    }
+    else if(gp_sci4_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+
+  } // END of RX_STRING Processing
+  else if(task_cmd == RX_STRING2)
+  {
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci4_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci4_rx_string[x] = 0x00;
+      for(x = 0; x<5; x++)
+        Temp_String[x] = 0x00;
+      gp_sci4_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI4_Serial_Receive((uint8_t *) Temp_String, 1); // Receie one character at a time.
+      gp_sci4_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci4_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      for(x=0; x<g_sci4_rx_count; x++)
+      {
+        // Transfer character to buffer
+        gp_sci4_rx_string[gp_sci4_rx_stringcnt++] = gp_sci4_rx_address[x];
+        // Test for completion character
+        if (gp_sci4_rx_address[x] == 0x0d)
+          gp_sci4_rx_state = RX_MSG_READY;
+      }
+      if(gp_sci4_rx_state != RX_MSG_READY)
+      {
+        // Restart Reception
+        R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+        gp_sci4_rx_state = RX_BUSY;
+      }
+      return(RX_BUSY);
+    }
+    else if(gp_sci4_rx_state == RX_MSG_READY)
+    {
+      for(x=0; x<gp_sci4_rx_stringcnt; x++)
+        str[x] = gp_sci4_rx_string[x];
+      gp_sci4_rx_state = RX_COMPLETE;
+      return(RX_COMPLETE);
+    }
+    else if(gp_sci4_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+
+  } // END of RX_STRING Processing
+  else if(task_cmd == RX_STRING_WAIT)
+  {
+	// Enable Interrupts just in case...
+	SEI();
+	// Clear buffer before starting next Receive cycle.
+	for (x=0; x<5; x++)
+		str[x] = SCI4.RDR;
+	gp_sci4_rx_state = RX_COMPLETE;
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci4_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      for(x = 0; x<RX_BUFFERSIZE; x++)
+        gp_sci4_rx_string[x] = 0x00;
+      gp_sci4_rx_stringcnt = 0;
+
+      // Start Reception
+      gp_sci4_rx_state = RX_BUSY;
+      R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+      while( gp_sci4_rx_state != RX_COMPLETE)
+      {
+        // Wait 10 msec
+        //OSTimeDlyHMSM(0u, 0u, 0u, 10,
+        //            OS_OPT_TIME_HMSM_STRICT,
+        //            &err);
+        if(gp_sci4_rx_state == RX_RECEIVED)
+        {
+          // Transfer contents of received characters to buffer
+          for(x=0; x<g_sci4_rx_count; x++)
+          {
+            // Transfer character to buffer
+            gp_sci4_rx_string[gp_sci4_rx_stringcnt++] = str[x];
+            // Test for completion character
+            if (str[x] == 0x0d)
+            {
+              gp_sci4_rx_state = RX_MSG_READY;
+            }
+          }
+          if(gp_sci4_rx_state == RX_RECEIVED)
+          {
+            // Restart Reception
+            gp_sci4_rx_state = RX_BUSY;
+            R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+          }
+        } // EndIf(gp_sci4_rx_state == RX_RECEIVED)
+        else if(gp_sci4_rx_state == RX_MSG_READY)
+        {
+          for(x=0; x<gp_sci4_rx_stringcnt; x++)
+            str[x] = gp_sci4_rx_string[x];
+          gp_sci4_rx_state = RX_COMPLETE;
+        } // EndElse (gp_sci4_rx_state == RX_RECEIVED)
+      } // EndWhile ( gp_sci4_rx_state != RX_COMPLETE)
+      return(0x00);
+    } // EndIf ((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    else
+      // Can't task if we are busy with another event.
+      return(0xff);
+  } // END of RX_STRING_WAIT Processing
+  else if(task_cmd == RX_CHAR)
+  {
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci4_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      gp_sci4_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+      gp_sci4_rx_state = RX_BUSY;
+      return(RX_BUSY);
+    }
+   else if(gp_sci4_rx_state == RX_RECEIVED)
+   {
+      // Transfer contents of received characters to buffer
+      gp_sci4_rx_state = RX_COMPLETE;
+      return(0);
+    }
+    else if(gp_sci4_rx_state == RX_ERROR)
+      return(RX_ERROR);
+    else
+      return(RX_BUSY);
+  } // END of RX_CHAR Processing
+  else if(task_cmd == RX_CHAR_WAIT)
+  {
+    // Test Receive flag and only fill buffer if flag is clear
+    if((gp_sci4_rx_state == RX_COMPLETE) || (gp_sci4_rx_state == RX_ERROR))
+    {
+      // Clear Receive flag
+      gp_sci4_rx_errorType = RX_COMPLETE;
+      // Clear buffer and count
+      gp_sci4_rx_stringcnt = 0;
+
+      // Start Reception
+      R_SCI4_Serial_Receive((uint8_t *) str, 1); // Receive one character at a time.
+      gp_sci4_rx_state = RX_BUSY;
+      while( gp_sci4_tx_state != RX_COMPLETE)
+      {
+        // Wait 10 msec
+        //OSTimeDlyHMSM(0u, 0u, 0u, 10,
+        //            OS_OPT_TIME_HMSM_STRICT,
+        //            &err);
+        if(gp_sci4_rx_state == RX_RECEIVED)
+        {
+          // Transfer contents of received characters to buffer
+            gp_sci4_rx_state = RX_COMPLETE;
+        }
+      }
+      return(0x00);
+    }
+    else
+      // Can't task if we are busy with another event.
+      return(0xff);
+  } // END of RX_CHAR_WAIT Processing
+  else
+    return(0xff);
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci4_Setup
+* Description  : This sets up all needed callbacks for the BSP
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI4_Setup( void)
+{
+	bsp_int_err_t err;
+
+	/* Register Transmit end _callback() to be called whenever a SCI4 Transmit ends. */
+	err = R_BSP_InterruptWrite(BSP_INT_SRC_BL0_SCI4_TEI4, (bsp_int_cb_t)r_sci4_transmitend_interrupt);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Register Receive Error _callback() to be called whenever a SCI4 Receive Error occurs. */
+	err = R_BSP_InterruptWrite(BSP_INT_SRC_BL0_SCI4_ERI4, (bsp_int_cb_t)r_sci4_receiveerror_interrupt);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	// Set internal States ready for operation.
+	gp_sci4_tx_state = TX_COMPLETE;
+	gp_sci4_rx_state = RX_COMPLETE;
+
+	return 0;
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci4_Disable
+* Description  : This Enables Group Interrupts.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI4_Disable( void)
+{
+	bsp_int_err_t err;
+
+
+	/* Disable SCI4 Transmit ends Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI4_TEI4,
+								BSP_INT_CMD_GROUP_INTERRUPT_DISABLE,
+								FIT_NO_PTR);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Disable SCI4 Receive Error Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI4_ERI4,
+								BSP_INT_CMD_GROUP_INTERRUPT_DISABLE,
+								FIT_NO_PTR);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	return 0;
+}
+
+/***********************************************************************************************************************
+* Function Name: r_sci4_Enable
+* Description  : This Enables Group Interrupts.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+unsigned char R_SCI4_Enable( void)
+{
+	bsp_int_err_t err;
+	bsp_int_ctrl_t data1;
+
+	data1.ipl = 5;	// Set Priority to 5.
+
+	/* Enable SCI4 Transmit ends Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI4_TEI4,
+								BSP_INT_CMD_GROUP_INTERRUPT_ENABLE,
+								(void *)&data1);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	/* Enable SCI4 Receive Error Interrupt. */
+	err = R_BSP_InterruptControl(BSP_INT_SRC_BL0_SCI4_ERI4,
+								BSP_INT_CMD_GROUP_INTERRUPT_ENABLE,
+								(void *)&data1);
+	if (BSP_INT_SUCCESS != err)
+	{
+		return 0xff;
+	}
+
+	return 0;
+}
+
+/***********************************************************************************************************************
+* Function Name: sci4_getRxComplete
+* Description  : This function returns the status of the Current SPI RX Complete Operation
+* Arguments    : None
+* Return Value : uint8_t Status:		0 - Waiting on Event Complete.
+* 										1 - Event Complete
+***********************************************************************************************************************/
+uint8_t	sci4_getRxComplete( void )
+{
+	return sci4_Rx_Complete;
+}
+
+/***********************************************************************************************************************
+* Function Name: sci4_getTxComplete
+* Description  : This function returns the status of the Current SPI TX Complete Operation
+* Arguments    : None
+* Return Value : uint8_t Status:		0 - Waiting on Event Complete.
+* 										1 - Event Complete
+***********************************************************************************************************************/
+uint8_t	sci4_getTxComplete( void )
+{
+	return sci4_Tx_Complete;
+}
+
+/***********************************************************************************************************************
+* Function Name: sci4_getSPIError
+* Description  : This function returns the status of the Current SPI Error Status.
+* Arguments    : None
+* Return Value : uint8_t Status:		0 - No Errors
+* 										1 - Error During event.
+***********************************************************************************************************************/
+uint8_t	sci4_getSPIError( void )
+{
+	return sci4_Error;
+}
 
 /***********************************************************************************************************************
 * Function Name: r_sci5_transmit_interrupt

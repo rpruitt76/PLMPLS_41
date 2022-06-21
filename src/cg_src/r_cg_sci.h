@@ -301,6 +301,28 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
+void R_SCI2_Create(void);
+void R_SCI2_Start(void);
+void R_SCI2_Stop(void);
+MD_STATUS R_SCI2_Serial_Send(uint8_t * const tx_buf, uint16_t tx_num);
+MD_STATUS R_SCI2_Serial_Receive(uint8_t * const rx_buf, uint16_t rx_num);
+static void r_sci2_callback_transmitend(void);
+static void r_sci2_callback_receiveend(void);
+
+void R_SCI4_Create(void);
+void R_SCI4_Start(void);
+void R_SCI4_Stop(void);
+MD_STATUS R_SCI4_Serial_Send(uint8_t * const tx_buf, uint16_t tx_num);
+MD_STATUS R_SCI4_Serial_Receive(uint8_t * const rx_buf, uint16_t rx_num);
+MD_STATUS R_SCI4_SPI_Master_Send_Receive(uint8_t * const tx_buf, uint16_t tx_num, uint8_t * const rx_buf, uint16_t rx_num);
+void SCI4_SPI_Init_User_Vars( void );
+static void r_sci4_callback_transmitend(void);
+static void r_sci4_callback_receiveend(void);
+static void r_sci4_callback_receiveerror(void);
+uint8_t	sci4_getRxComplete( void );
+uint8_t	sci4_getTxComplete( void );
+uint8_t	sci4_getSPIError( void );
+
 void R_SCI5_Create(void);
 void R_SCI5_Start(void);
 void R_SCI5_Stop(void);

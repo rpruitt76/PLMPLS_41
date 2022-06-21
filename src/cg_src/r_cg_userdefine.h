@@ -34,11 +34,29 @@ User definitions
 #define FAST_INTERRUPT_VECTOR 0
 
 /* Start user code for function. Do not edit comment generated here */
+extern unsigned char R_SCI2_Serial_Print( char str[], unsigned char task_cmd);
+extern unsigned char R_SCI2_Serial_Rceive( char str[], unsigned char task_cmd);
+extern unsigned char R_SCI2_Setup( void );
+extern unsigned char R_SCI2_Enable( void );
+extern unsigned char R_SCI2_Disable( void );
+
+extern unsigned char R_SCI4_Serial_Print( char str[], unsigned char task_cmd);
+unsigned char R_SCI4_SPI_Send( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen );
+unsigned char R_SCI4_SPI_Receive( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen );
+extern unsigned char R_SCI4_Serial_Rceive( char str[], unsigned char task_cmd);
+extern unsigned char R_SCI4_Setup( void );
+extern unsigned char R_SCI4_Enable( void );
+extern unsigned char R_SCI4_Disable( void );
+unsigned char R_SCI4_Setup( void );
+unsigned char R_SCI4_Enable( void );
+unsigned char R_SCI4_Disable( void );
+
 extern unsigned char R_SCI5_Serial_Print( char str[], unsigned char task_cmd);
 extern unsigned char R_SCI5_Serial_Rceive( char str[], unsigned char task_cmd);
 extern unsigned char R_SCI5_Setup( void );
 extern unsigned char R_SCI5_Enable( void );
 extern unsigned char R_SCI5_Disable( void );
+
 extern unsigned char R_SCI6_Serial_Print( char str[], unsigned char task_cmd);
 unsigned char R_SCI6_SPI_Send( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen );
 unsigned char R_SCI6_SPI_Receive( uint8_t str[], int wrtLen, uint8_t retStr[], int rdLen );
