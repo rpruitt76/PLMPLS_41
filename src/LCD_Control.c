@@ -4117,10 +4117,16 @@ void smmain_screen(void)
 //*			   		  char	  	  			Bat_Lvl[3];
 //*
 //*****************************************************************************
+#define TEMP_CNTLMT		5		// Used to determine how many seconds between Measuring temperature
 void update_time(void)
 {
   static unsigned int min_save=0;
   static unsigned char sec_save=0;
+  static int TempCnt = 0;
+  static unsigned char Warn_flg = 0;
+  static unsigned char WarnMsg_flg = 0;
+  static unsigned char FanMsg_Flg = 0;
+  static unsigned char FanMsg_Flg2 = 1;
   
   // Time to convert numbers to strings
 #ifdef DEBUGGR
@@ -4171,7 +4177,66 @@ void update_time(void)
 #if NEW_LCD
 //    init_lcd2();						    // Initialize the LCD Screen.
 #endif
+	TempCnt++;								// Increment Temperature Count
+	if (TempCnt >= TEMP_CNTLMT)
+	{
+		TempCnt = 0;						// Reset Temperature Count
+		//Force Msgs
+		StrmOn = 1;
+		printf2("CMD:TP\n");				// Send Temperature Request Msg
+		// Msgs normal.
+		StrmOn = 0;
+	}
 	remain_screen();						// Display Main Screen.
+	// Test Temperature to determine action
+	if ( BGM_Temp >= WARN_TEMP)
+	{
+		if( Warn_flg < 5)
+		{
+			Warn_flg++;						// Incr Warn Flag
+			// Play Sound
+			beep_3Bp();
+			beep_DNote( 300 );
+			monPrint("STATUS", "Temperature Warning.");				// PLLs failed Power Up.
+			WarnMsg_flg = 1;										// Set Warn Msg Flag.
+		}
+	}
+	else if ( BGM_Temp <= (WARN_TEMP-10))
+	{
+		Warn_flg = 0;						// Reset Warn Flg
+		if ( WarnMsg_flg > 0)
+		{
+			monPrint("STATUS", "Temperature Dropped.");				// PLLs failed Power Up.
+			WarnMsg_flg = 0;										// Clear Flag
+		}
+	}
+	if ( BGM_Temp >= FAN_TEMP)
+	{
+		FanMsg_Flg2 = 0;								// Clear FanMsg_Flg2.
+		if ( FanMsg_Flg == 0)
+		{
+			monPrint("STATUS", "FAN ON.");				// PLLs failed Power Up.
+			FanMsg_Flg = 1;								// Set Flag.
+		}
+		// Power Up Fan
+	}
+	else if ( BGM_Temp <= (FAN_TEMP-5))
+	{
+		FanMsg_Flg = 0;								// Clear FanMsg_Flg.
+		if ( FanMsg_Flg2 == 0)
+		{
+			monPrint("STATUS", "FAN OFF.");				// PLLs failed Power Up.
+			// Power Down Fan
+			FanMsg_Flg2 = 1;								// Set Flag.
+		}
+	}
+	if ( BGM_Temp >= POWERDN_TEMP)
+	{
+		monPrint("ERROR", "OVERHEAT. POWER DOWN.");				// PLLs failed Power Up.
+		// Change Mode...we are over-heating
+		mode = OVERHEAT;
+	}
+
 /*    #if GRAPHICS
     lcd_comm2(GR1, RSCOMMAND, Page_Address); 
 //    wait_busy2(GR1); 	  	  // Wait for Busy Flag to Clear Device 2.
