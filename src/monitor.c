@@ -447,6 +447,10 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		Rd_MacAddrmonitor( parm1 );
 	}
+	else if( strncmp(cmdString, "Temp:", 5) == 0)
+	{
+		ParseTemperature( parm1 );
+	}
 	else
 	{
 		if  (tst_laser_active())

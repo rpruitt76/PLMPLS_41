@@ -2584,15 +2584,16 @@ void main_plm(void)
 		  }
 		}
 		else if((key_var==0) ||
-				(mode == LOW_BAT)) {
+				(mode == LOW_BAT) ||
+				(mode == OVERHEAT)) {
 		  nobeep_flg = 1;					    // Turn On Beep.
 		  sweep_flg = 0;						  //Turn Off Sweep.
 //		  macro_flg = 0;		   		  			   // Turn Macros off.
 		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  cnt_dwn_flg = 0;						// Arm Timer to Deactivate Timer.
 		  tmr_update_flg = 2;					// Arm Update to Deactivate Var Update.
-  		  if (mode != LOW_BAT)
-  		  {
+  		  if ((mode != LOW_BAT) && (mode != OVERHEAT))
+ 		  {
   			  laser_off();	  	   					// Turn-Off Laser.
   			  monPrint("MNTR", "laser_off");		// Send Status Message
   	  		  restore_vars();  			   	 		// Restore Key Variables.
@@ -2699,13 +2700,14 @@ void main_plm(void)
 		  }
 		}
 		else if((key_var==1)  ||
-		        (mode == LOW_BAT)){
+		        (mode == LOW_BAT) ||
+				(mode == OVERHEAT)){
 //		  macro_flg = 2;
  		  sweep_flg = 0;						  //Turn Off Sweep.
   		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  cnt_dwn_flg = 0;						// Arm Timer to Deactivate Timer.
 		  tmr_update_flg = 2;					// Arm Update to Deactivate Var Update.
-  		  if (mode != LOW_BAT)
+ 		  if ((mode != LOW_BAT) && (mode != OVERHEAT))
   		  {
   			  laser_off();	  	   					// Turn-Off Laser.
   	  		  restore_vars();  			   	 		// Restore Key Variables.
@@ -2717,13 +2719,14 @@ void main_plm(void)
 	    asrt_col0(); 							// Assert Col 1 for Key Test Later.
 		key_var = tst_cancel();					// Test for Cancel Key
 		if((key_var==1)  ||
-		        (mode == LOW_BAT)){
+		   (mode == LOW_BAT) ||
+		   (mode == OVERHEAT)){
 //		  macro_flg = 2;
  		  sweep_flg = 0;						  //Turn Off Sweep.
   		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  cnt_dwn_flg = 0;						// Arm Timer to Deactivate Timer.
 		  tmr_update_flg = 2;					// Arm Update to Deactivate Var Update.
-  		  if (mode != LOW_BAT)
+  		  if ((mode != LOW_BAT) && (mode != OVERHEAT))
   		  {
   			  laser_off();	  	   					// Turn-Off Laser.
   	  		  restore_vars();  			   	 		// Restore Key Variables.
@@ -2933,7 +2936,8 @@ void main_plm(void)
 		  } // EndElse (macro_flg > 0)
 		} // EndIf (cnt_dwn_flg == 0)
 		else if((key_var==1)  ||
-		        (mode == LOW_BAT))
+		        (mode == LOW_BAT) ||
+				(mode == OVERHEAT))
 		{
 #ifdef DEBUGGR
 		  debug1(11);
@@ -2943,7 +2947,7 @@ void main_plm(void)
 		  cleanup_macros();						// Test and cleanup Macro Vars.
 		  cnt_dwn_flg = 0;						// Deactivate Timer.
 		  tmr_update_flg = 2;					// Arm Update to Deactivate Var Update.
-  		  if (mode != LOW_BAT)
+  		  if ((mode != LOW_BAT) && (mode != OVERHEAT))
   		  {
   			  laser_off();	   	   					// Turn-Off Laser.
   			  monPrint("MNTR", "Five_Min_Mode_Off");		// Send Status Message
@@ -4899,6 +4903,32 @@ void main_plm(void)
 		  once = 0;								// Reset once flag.
 		} // End If Test two_min_test Failed
 	    break;
+
+	    //*******************************************************************************
+	    //*
+	    //*   OVERHEAT
+	    //*
+	    //*	  TODO: OVERHEAT
+	    //*******************************************************************************
+	    	  case OVERHEAT:							    // Delete_Prog.
+	    	    if (once != 2) {
+	    		  printf2("*** OVERHEAT ***\n");
+	    		  laser_off();	  	   					// Turn-Off Laser.
+	    		  cnt_dwn_flg = 0;						// Arm Timer to Deactivate Timer.
+	    		  tmr_update_flg = 2;					// Arm Update to Deactivate Var Update.
+	      		  restore_vars();  			   	 		// Restore Key Variables.
+	    		  mode = OVERHEAT;						// Force mode.
+	              Overheat_Screen();					// Display Screen.
+	    		  two_sec_start();						// Two Minute Timer Start.
+	    		  once = 2;								// Set Once Flag.
+	    		}
+	    	    else
+	    		  printf2(".");
+	    	    if (two_sec_test() == 0) {
+	    		  mode = Soft_PD; 	  					// Set Mode to Soft_PD.
+	    		  once = 0;								// Reset once flag.
+	    		} // End If Test Timeout_test Failed
+	    	    break;
 
 //*******************************************************************************
 //*
