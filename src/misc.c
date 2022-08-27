@@ -95,6 +95,9 @@ void sleep_code(void)
 		mode = Locked_CONTINUE;
 	else
 		mode = Soft_PD_CONTINUE;					// After wakeup will need to process as reset restore.
+    // 0.2 NOW....Save Vars...
+	save_vars();  	 	  					    // Save Updated Variables.
+
 	// 0.1 Need to sleep the Beacon that may be sitting on oour console port...RP 10/7/2021
 	// Reset Beacon II and Hold in Reset State: EFR32_RESET = LOW
 	PLMpls_gpio_Off(EFR32_RESET);
@@ -117,9 +120,6 @@ void sleep_code(void)
 	printf2("CMD:SD\n");
     // Msgs normal.
     StrmOn = 0;
-
-    // 0.2 NOW....Save Vars...
-	save_vars();  	 	  					    // Save Updated Variables.
 
 	// 1. Disable Timers.
 	R_TMR0_Stop();
