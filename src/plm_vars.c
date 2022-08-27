@@ -35,6 +35,7 @@
 		 float	 			laser2_disp;			 // Laser 2 Display Value.
 		 float	 			laser3_disp;			 // Laser 3 Display Value.
 		 float	 			laser4_disp;			 // Laser 4 Display Value.
+		 float				BGM_Temp;				 // Temperature of BGM Module.
 		 unsigned int		prog_num;				 // Program Number
 		 unsigned long		opmin_cnt;			 	 // Operational Minute Count for Unit.
 #if LEASEOP

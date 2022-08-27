@@ -4292,6 +4292,24 @@ void LowBat_Screen(void)
 
 //*****************************************************************************
 //*
+//* routine: Overheat_Screen
+//* Date:    August 13, 2022
+//* Author:  Ralph Pruitt
+//* Display the Overheat LCD Screen.
+//*
+//*****************************************************************************
+void Overheat_Screen(void)
+{
+  char tempstr[18];
+
+  clear_screen();							// Clear Screen.
+  set_cursor(LINE2, 0, NOCURSOR);
+  strcpy(tempstr, "   OVERHEAT   ");
+  write_lcd(tempstr);
+}
+
+//*****************************************************************************
+//*
 //* routine: PwrDwn_Screen
 //* Date:    November 5, 2021
 //* Author:  Ralph Pruitt

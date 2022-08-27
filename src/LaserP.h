@@ -108,6 +108,16 @@
 // Mark III
 #define	 DELAY_KEY			50			// Delay between Keys
 
+// Temperature Defines
+#define	 INIT_TEMP			70.0		// Initialize BGM_Temp to this value
+#define	 WARN_TEMP			157.0		// Temperature to Warn about High Temp
+#define	 FAN_TEMP			155.0		// Temperature to Activate Fan System
+#define	 POWERDN_TEMP		160.5		// Temperature to Power Down Module
+//****************** Test Values *******************
+//#define	 WARN_TEMP			87.5		// Temperature to Warn about High Temp
+//#define	 FAN_TEMP			85.0		// Temperature to Activate Fan System
+//#define	 POWERDN_TEMP		90.0		// Temperature to Power Down Module
+
 #ifdef CLW
 #define	 CUSTOM_START		1		    // Start of Custom Protocols
 #define	 CUSTOM_END			300			// End of Custom Protocols
@@ -287,6 +297,7 @@ extern void main_screen(void);
 extern void Delay(void);
 extern void smmain_screen(void);
 extern void LowBat_Screen(void);
+extern void Overheat_Screen(void);
 extern void PwrDwn_Screen(void);
 extern void proc_buffer(void);
 extern unsigned char write_lcd(char *s);
@@ -388,6 +399,7 @@ extern char* getDateStr( void );
 extern bool tst_laser_active( void );
 extern void Wr_MacAddrmonitor( char* parm1);
 extern void Rd_MacAddrmonitor( char* parm1);
+extern void ParseTemperature( char* parm1);
 
 #ifdef TST_PATCH
 extern unsigned char MonitorParse(void);
@@ -562,6 +574,7 @@ extern float	 			laser1_disp;			 // Laser 1 Display Value.
 extern float	 			laser2_disp;			 // Laser 2 Display Value.
 extern float	 			laser3_disp;			 // Laser 3 Display Value.
 extern float	 			laser4_disp;			 // Laser 4 Display Value.
+extern float				BGM_Temp;				 // Temperature of BGM Module.
 extern char	   				prog_str[];
 extern char	   				tmr_minstr[];
 extern char	   				tmr_secstr[];
@@ -821,7 +834,8 @@ extern const struct user_macro 	macro1_data;
 #define	 PBFErrorScreen		90			// PBF Error mode.
 #define	 DateEntryScreen	91			// Date Entry Screen.
 #define	 TimeEntryScreen	92			// Time Entry Screen
-#define	 END_SETTING		93			// End of Entries
+#define	 OVERHEAT			93			// Unit is in Overheat mode...Power Down.
+#define	 END_SETTING		94			// End of Entries
 //*****************************************************************************
 //*
 //* LCD Control Definitions

@@ -279,6 +279,7 @@ void init_devices(void)
 	laser3_disp = 0;			 	 // Clear Laser 3 Display Value.
 	laser4_disp = 0;			 	 // Clear Laser 4 Display Value.
 	nobeep_flg = 1;				 // Force to One to allow Beeps.
+	BGM_Temp = INIT_TEMP;			// Set BGM_Temp to Initial Temp.
 #ifdef STRM_NO
 	StrmOn = 0;						// Disable Streaming to Console.
 #else

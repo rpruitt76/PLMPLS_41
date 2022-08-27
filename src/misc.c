@@ -4281,3 +4281,30 @@ void Rd_MacAddrmonitor( char* parm1)
 	printf2(tempstr);
 	printf2("\n\n");
 }
+
+/*****************************************************************************
+ *
+ * routine: ParseTemperature
+ * Date: 	August 13, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine Parses and saves the new BGM Temperature.
+ *
+ * INPUT:
+ *  @param	parm1	: Character string representing new Mac Address
+ *
+ * OUTPUT:
+ * 	@retval NONE
+ *
+ *****************************************************************************/
+void ParseTemperature( char* parm1)
+{
+	//char tempstr[80];
+
+	BGM_Temp = atof(parm1);
+	// Test to see if there is no Parameter
+	//printf2("*********************\n");
+	//sprintf(tempstr, "Temperature: %3.1f\n", BGM_Temp);
+	//printf2(tempstr);
+	//printf2("\n\n");
+}
