@@ -3718,8 +3718,13 @@ void SetTimer( char* parm1)
 			tmr_sec = second;		// Build new tmr_min.
 */
 			tmr_min = (minute * 60) + second;
-			if (tmr_min > 999)
+#ifdef COSMAN
+			if(tmr_min > 99)
+				tmr_min = 99;
+#else
+			if(tmr_min > 999)
 				tmr_min = 999;
+#endif
 			tmr_sec = 0;		// Build new tmr_min.
 
 			save_vars();  	 	  	// Save Updated Variables.

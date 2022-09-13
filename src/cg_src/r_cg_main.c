@@ -407,7 +407,7 @@ void main_plm(void)
     printf2("PLM Monitor Starting... \n\n");
     printf2("***************************************************************\n");
     printf2("PLM PLUS OS Version 4.07\n");
-    printf2("Copyright: Aug 27, 2022\n");
+    printf2("Copyright: Sep 13, 2022\n");
     printf2("Property of Cold Laser Therapeutics, LLC\n");
     printf2("***************************************************************\n\n\n");
 
@@ -3699,8 +3699,13 @@ void main_plm(void)
 			  case SELECT:
 //				sprintf(temp_String,"%s:%s", tmr_minstr, tmr_secstr);
 				tmr_min = (tmr_min * 60) + tmr_sec;
+#ifdef COSMAN
+				if(tmr_min > 99)
+					tmr_min = 99;
+#else
 				if(tmr_min > 999)
 					tmr_min = 999;
+#endif
 				tmr_sec = 0;
 				sprintf(temp_String,"%s:%s:00", tmr_minstr, tmr_secstr);
 
