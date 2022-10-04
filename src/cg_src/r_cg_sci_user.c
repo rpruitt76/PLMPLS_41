@@ -1664,6 +1664,11 @@ unsigned char R_SCI5_Serial_Print( char str[], unsigned char task_cmd)
   }
   else if(task_cmd == TX_SEND_WAIT)
   {
+	// Wait for Serial NOT BUSY.
+	while (gp_sci5_tx_state == TX_BUSY)
+	{
+
+	}
     // Test Transmit flag and only fill buffer if flag is clear
     if(gp_sci5_tx_state != TX_BUSY)
     {
