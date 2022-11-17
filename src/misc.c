@@ -3723,6 +3723,21 @@ void Miscmonitor( char* parm1)
 			sprintf(tempstr,"lockCode: LOCKED\n");
 		printf2(tempstr);
 	}
+	else if( strcmp(parm1, "lockDev") == 0)
+	{
+		printf2("*****************************************\n");
+		ClrUnLockCode();
+		// Set New Mode.
+		mode = Boot_Screen;
+		Over_Ride();
+
+		printf2("Device now LOCKED.\n");
+		if ( TstUnLockCode() )
+			sprintf(tempstr,"lockCode: UNLOCKED\n");
+		else
+			sprintf(tempstr,"lockCode: LOCKED\n");
+		printf2(tempstr);
+	}
 	else if( strcmp(parm1, "LDay") == 0)
 	{
 		printf2("*****************************************\n");
@@ -4198,6 +4213,80 @@ void setPBFmonitor( char* parm1)
 		// We have a bad code need to change mode to enter code again.
 	      printf2("ILLEGAL/Bad PBF Code!!\n");
 	}
+}
+
+void set14DigPBFmonitor( char* parm1)
+{
+	char tempstr[80];
+	int  tmpleaseDays;
+	int  tmpMode;
+	int  tmpMapMode;
+    int  tmp_fw_version;
+
+	  if (decode_14PBFcode( parm1, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
+	  {
+		  // Test FW Base Var and Validate this is the correct code base.
+		  if ( tmp_fw_version == FW_CODE_BASE )
+		  {
+			  // Validate lease Days and tmpMode
+			  if((tmpleaseDays<=90) && (tmpleaseDays>=0))
+			  {
+				  if((tmpMode<=3) && (tmpMode>=0))
+				  {
+					  // Unlock Code so that it will Now run...
+					  SetUnLockCode();
+					  // We have a good Code. Change modes and Lease Days.
+					  opMode = tmpMode;
+					  //mapMode = tmpMapMode;
+					  leaseDays = tmpleaseDays;
+					  getDate(&leaseMnth, &leaseDay, &leaseYear);
+					  // Write new values to Data Flash.
+					  EEPROM_WRITE((uint32_t)&opMode, (uint32_t)&eopMode, sizeof(opMode));	 			// Write opMode to Flash.
+					  //EEPROM_WRITE((uint32_t)&mapMode, (uint32_t)&emapMode, sizeof(mapMode));	 		// Write mapMode to Flash.
+					  EEPROM_WRITE((uint32_t)&leaseDays, (uint32_t)&eleaseDays, sizeof(leaseDays));	 	// Write leaseDays to Flash.
+					  EEPROM_WRITE((uint32_t)&leaseDay, (uint32_t)&eleaseDay, sizeof(leaseDay));	 	// Write leaseDay to Flash.
+					  EEPROM_WRITE((uint32_t)&leaseMnth, (uint32_t)&eleaseMnth, sizeof(leaseMnth));	 	// Write leaseMnth to Flash.
+					  EEPROM_WRITE((uint32_t)&leaseYear, (uint32_t)&eleaseYear, sizeof(leaseYear));	 	// Write leaseYear to Flash.
+					  WDR(); //this prevents a timout on enabling
+
+						// Show new Value.
+						printf2("*****************************************\n");
+						sprintf(tempstr, "SET PBF %s is GOOD!\n", parm1);
+						printf2(tempstr);
+
+						sprintf(tempstr, "Lease Days: %03d\n", tmpleaseDays);
+						printf2(tempstr);
+						sprintf(tempstr, "Mode: %1d\n", tmpMode);
+						printf2(tempstr);
+						sprintf(tempstr, "Map Mode: %1d\n", tmpMapMode);
+						printf2(tempstr);
+						// Set New Mode.
+						mode = Main;
+						Over_Ride();
+				  } // Endif ((tmpMode<=3) && (tmpMode>=0))
+				  else
+				  {
+						// We have a bad code need to change map mode to enter code again.
+					    printf2("ILLEGAL/Bad PBF Map Mode Parameter!!\n");
+				  } // Endelse ((tmpMode<=3) && (tmpMode>=0))
+			  } // Endif ((tmpleaseDays<=90) && (tmpleaseDays>=0))
+			  else
+			  {
+					// We have a bad code need to change mode to enter code again.
+				  	printf2("ILLEGAL/Bad PBF Lease Days Parameter!!\n");
+			  } // Endelse ((tmpleaseDays<=90) && (tmpleaseDays>=0))
+		  } // Endif ( tmp_fw_version == FW_CODE_BASE )
+		  else
+		  {
+			  // We have a bad code need to change mode to enter code again.
+		      printf2("Code Base Not expected!!\n");
+		  } // Endelse ( tmp_fw_version == FW_CODE_BASE )
+	  } // Endif (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
+	  else
+	  {
+		  // We have a bad code need to change mode to enter code again.
+		  printf2("ILLEGAL/Bad PBF14 Code!!\n");
+	  } // Endelse (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
 }
 
 void setUPgmmonitor( char* parm1)

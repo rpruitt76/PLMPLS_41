@@ -412,6 +412,10 @@ void  MonitorParse2 (char *cmdString, char *parm1)
 	{
 		setPBFmonitor( parm1 );
 	}
+	else if( strncmp(cmdString, "unlckDev", 8) == 0)
+	{
+		set14DigPBFmonitor( parm1 );
+	}
 	else if( strncmp(cmdString, "setUPgm", 7) == 0)
 	{
 		setUPgmmonitor( parm1 );

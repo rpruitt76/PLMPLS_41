@@ -390,6 +390,7 @@ extern void SetModeMonitor( char* parm1);
 extern void SetLDayMonitor( char* parm1);
 extern void testPBFmonitor( char* parm1);
 extern void setPBFmonitor( char* parm1);
+extern void set14DigPBFmonitor( char* parm1);
 extern void setUPgmmonitor( char* parm1);
 extern void TestOriginmonitor( char* parm1);
 extern 	void timeOutmonitor( char* parm1);
