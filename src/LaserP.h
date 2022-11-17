@@ -850,7 +850,12 @@ extern const struct user_macro 	macro1_data;
 #define	 DateEntryScreen	91			// Date Entry Screen.
 #define	 TimeEntryScreen	92			// Time Entry Screen
 #define	 OVERHEAT			93			// Unit is in Overheat mode...Power Down.
-#define	 END_SETTING		94			// End of Entries
+#define	 TGSerialNumScreen	94			// Alternate Serial Number Entry Screen.
+#define	 TGDateEntryScreen	95			// Alternate Date Entry Screen.
+#define	 TGTimeEntryScreen	96			// Alternate Time Entry Screen
+#define	 TGPBFEntryScreen	97			// Alternate Target PBF Entry mode.
+#define	 TGPBFErrorScreen	98			// Alternate PBF Error mode.
+#define	 END_SETTING		99			// End of Entries
 //*****************************************************************************
 //*
 //* LCD Control Definitions
