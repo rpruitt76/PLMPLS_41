@@ -2841,6 +2841,51 @@ void Pulse_Armed_screen(void)
 
 //*****************************************************************************
 //*
+//* routine: tgPBFEntryScrn
+//* Date:    Nov 15, 2022
+//* Author:  Ralph Pruitt
+//* Display the tgPBF Entry Screen for valid tgPBF code to be entered.
+//*
+//*****************************************************************************
+void tgPBFEntryScrn(void)
+{
+  char tempstr[18];
+
+  clear_screen();							// Clear Screen.
+  // Printf commands
+  printf2("***************************************************************\n");
+  printf2("**               tgPBF Entry SCREEN                           *\n");
+
+  set_cursor(LINE1, 0, NOCURSOR);
+  strcpy(tempstr, "Enter Code Below");
+  write_lcd(tempstr);
+  set_cursor(LINE2, 0, NOCURSOR);
+  strcpy(tempstr, "? ");
+  write_lcd(tempstr);
+  underline = 1;
+#ifndef LCD_000
+  set_cursor(LINE2,1, BLINK);
+#endif
+  write_lcd(tglease_str);
+  underline = 0;
+#ifndef LCD_000
+  set_cursor(LINE2, 0, NOCURSOR);
+#endif
+  strcpy(tempstr, " ");
+  write_lcd(tempstr);
+
+  set_cursor(LINE3, 0, NOCURSOR);
+  strcpy(tempstr, " Call Ph Below  ");
+  write_lcd(tempstr);
+
+  set_cursor(LINE4, 0, NOCURSOR);
+  strcpy(tempstr, "  303-570-3206  ");
+  write_lcd(tempstr);
+  printf2("\n***************************************************************\n\n\n");
+}
+
+//*****************************************************************************
+//*
 //* routine: PBFEntryScrn
 //* Date:    May 25, 2015
 //* Author:  Ralph Pruitt
@@ -2909,10 +2954,12 @@ void PBFErrorScrn(int code)
   printf2("**                   PBFErrorScrn SCREEN                      *\n");
 
   set_cursor(LINE1, 0, NOCURSOR);
-  if (code>0)
-	  strcpy(tempstr, "Bad Code Entered");
+  if (code == 1)
+	  strcpy(tempstr, "Expired Lse/Demo");
+  else if (code == 2)
+  	  strcpy(tempstr, "WRONG CODE BASE!");
   else
-  	  strcpy(tempstr, "Expired Lse/Demo");
+	  strcpy(tempstr, "Bad Code Entered");
   write_lcd(tempstr);
 
   set_cursor(LINE2, 0, NOCURSOR);

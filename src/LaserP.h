@@ -526,7 +526,9 @@ extern const unsigned long        eopmin_lmt;		 	 // Number minutes to limit ope
 extern unsigned long        opmin_lmt;		 	 // Number minutes to limit operation.
 #endif
 #define	 LEASE_STR_LEN		13			// Frequency String Length...lser1_strng
+#define	 TG_LEASE_STR_LEN		15			// TGLease String Length...tglease_str
 extern char				    lease_str[LEASE_STR_LEN];
+extern char					tglease_str[TG_LEASE_STR_LEN];
 extern char					mac_addr[8];
 extern const char			emac_addr[8];
 extern const unsigned long		eserial_number;			 // Serial Number of unit.
