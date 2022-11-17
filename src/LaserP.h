@@ -375,6 +375,7 @@ extern void getTime(int* hour, int* minute, int* second);
 extern void getDate(int* month, int* day, int* year);
 extern unsigned long calcPBF(void);
 extern int decodePBFcode( char* parm1, int* leaseDays, int* Mode);
+extern int decode_14PBFcode( char* parm1, int* leaseDays, int* Mode, int* mapMode, int* FW_Version );
 extern int NumDaysOrigin( int month, int day, int year );
 extern int CalcLeaseDays( void );
 extern void HardwareWakeup(void);

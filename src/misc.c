@@ -3333,6 +3333,94 @@ unsigned long calcPBF( void )
 	return result;
 }
 
+/*****************************************************************************
+ *  routine: decode_14PBFcode
+ *  Date: 	 Nov 13, 2022
+ *  Updated: ---
+ *  Author:  Ralph Pruitt
+ *  This routine decodes the passed 14 Digit PBF code and verifies if it is a
+ *  good code. If it is a good code, it then decodes the LeaseDays and Mode
+ *  variable and returns those. This routine returns a 1 if the result is good
+ *  else returns a zero.
+ *
+ *  Parameters:
+ *  		char* parm1:		14 Digit string containing the PBF code to be tested.
+ *  		int* leaseDays:		Pointer to variable to be set with # of lease days.
+ *  		int* Mode:			Pointer to variable to be set with Mode.
+ *  		int* mapMode:		Alternate Mapping of Limited Protocols
+ *  		int* FW_Version		Returned FW_Version in PSF Code.
+ *
+ *  Returns:
+ *  		int 	0:		Bad PBF Code
+ *  				1:		Good PBF Code
+ ****************************************************************************/
+int decode_14PBFcode( char* parm1, int* leaseDays, int* Mode, int* mapMode, int* FW_Version )
+{
+	char tempstr[14];
+	char tempstr2[14];
+	int x;
+	unsigned long tempResult;
+	unsigned long passedPBF;
+
+	// 0. Blank Out String before we start...
+	for (x=0; x<14; x++)
+	{
+		tempstr[x] = 0x00;
+		tempstr2[x] = 0x00;
+	}
+
+	// Test length of string first.
+	if (strlen(parm1) == 14)
+	{
+		// Length of string is correct. Extract first 8 chars as PBF Code to test.
+		strncpy(tempstr, parm1, 8);
+
+		// Convert string to number value
+		passedPBF = atol(tempstr);
+
+		// Test passed PBF with true PBF
+		if (passedPBF == calcPBF())
+		{
+
+			// 1. Extract last 6 digits for Mode and leaseDays
+			for (x=0; x<6; x++)
+				tempstr2[x] = parm1[x+8];
+
+			// 2. Exclusive Or with passed PBF
+			tempResult = atol(tempstr2);
+			tempResult = tempResult ^ (passedPBF & 0x3ffff);
+
+			// Get Target_Cd From Most Significant 10 Bits
+			*FW_Version = (tempResult & 0xFFC00)>>10;
+
+			// Update tempResult without MSB 10 Bits
+			tempResult = (tempResult & 0x003FF);
+
+			// Strip out Mode
+			*Mode = (int)tempResult % 10;
+			//*Mode = (int)(tempResult & 0x003);
+
+			// Strip out mapMode
+			*mapMode = (int)((*Mode & 0x00C)/4);
+
+			// Strip out leaseDays.
+			*leaseDays = ((int)tempResult - *Mode)/10;
+
+			*Mode = (int)(*Mode & 0x003);
+
+			// Good result. Return 1.
+			return 1;
+
+		}
+		else
+			// PBF does not match. return null
+			return 0;
+	}
+	else
+		// Length wrong. return null
+		return 0;
+}
+
 //*****************************************************************************
 //* routine: decodePBFcode
 //* Date: 	 May 25, 2015
