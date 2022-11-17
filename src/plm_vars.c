@@ -54,6 +54,8 @@
 
 		 int				opMode;					// Mode for unit to operate
 		 											// 0:Normal	1: Demo		2:Lease
+		 unsigned int		lockCode;				// Lock Variable that allows code to be unlocked
+													// 5A5A: Unlocked
 		 int				leaseDays;				// Number of days to operate Lease
 		 int				leaseDay;				// Lock Down Lease Day of Month
 		 int				leaseMnth;				// Lock Down Lease Month
@@ -188,6 +190,7 @@
   		const unsigned long		eserial_number = 0;			 // Serial Number of unit.
   		const int				eopMode = 0; 	  			 // Mode for unit to operate
   									      	  	  	  	     // 0:Normal	1: Demo		2:Lease
+		const unsigned int		elockCode = 0;				 // EEPROM Lock code
   		const int				eleaseDays = 0; 	  		 // Number of days to operate Lease
   		const int				eleaseDay = 1; 	  			 // Lock Down Lease Day of Month
   		const int				eleaseMnth = 1;	  			 // Lock Down Lease Month

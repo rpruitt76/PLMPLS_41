@@ -97,9 +97,10 @@
 //#define  PARKCL			1			 // Define if this is a Mark III Park College Design
                                      // Comment it out for a Mark III Load.
 // Mark III Version Numbers and Dates...Release 3.3
-#define	 VERSIONNUM		"4.08" 		 // Current Version Revision.(4 CHARS)
-#define  RELDATE		"11/08/22"	 // Current Release Date.(8 Chars)
-#define	 VERSIONSTR		"PLM PLUS V4.08 Nov 8, 2022" 		 // Current Version String Revision.
+#define	 VERSIONNUM		"5.00" 		 // Current Version Revision.(4 CHARS)
+#define  RELDATE		"11/17/22"	 // Current Release Date.(8 Chars)
+#define	 VERSIONSTR		"PLM PLUS V5.00 Nov 17, 2022" 		 // Current Version String Revision.
+#define	 FW_CODE_BASE	2			// 2:	PLM Ultimate Baseline		Nov 17, 2022
 
 //#define	 MAX_MULT_FREQ  195000000		// Highest Frequency is 195000000MHz
 //#define	 DEF_HIGH_FREQ	180000000		// Default High Frequency.
@@ -618,12 +619,15 @@ extern unsigned char 	    ticker, d_tick;			 // 1 Second Ticker Used to count Se
 extern unsigned long 		lser2S_time;		 	 // Laser 2 Sweep Load.
 extern int					opMode;					// Mode for unit to operate
 													// 0:Normal	1: Demo		2:Lease
+extern unsigned int			lockCode;				// Lock Variable that allows code to be unlocked
+													// 5A5A: Unlocked
 extern int					leaseDays;				// Number of days to operate Lease
 extern int					leaseDay;				// Lock Down Lease Day of Month
 extern int					leaseMnth;				// Lock Down Lease Month
 extern int					leaseYear;				// Lock Down Lease Year.
 extern const int			eopMode; 		  		// Mode for unit to operate
 								      	  	  	  	// 0:Normal	1: Demo		2:Lease
+extern const unsigned int	elockCode;				// EEPROM Lock code
 extern const int			eleaseDays; 		  	// Number of days to operate Lease
 extern const int			eleaseDay; 	  			// Lock Down Lease Day of Month
 extern const int			eleaseMnth;	  			// Lock Down Lease Month
