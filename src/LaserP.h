@@ -98,8 +98,8 @@
                                      // Comment it out for a Mark III Load.
 // Mark III Version Numbers and Dates...Release 3.3
 #define	 VERSIONNUM		"4.08" 		 // Current Version Revision.(4 CHARS)
-#define  RELDATE		"10/04/22"	 // Current Release Date.(8 Chars)
-#define	 VERSIONSTR		"PLM PLUS V4.08 Oct 4, 2022" 		 // Current Version String Revision.
+#define  RELDATE		"11/08/22"	 // Current Release Date.(8 Chars)
+#define	 VERSIONSTR		"PLM PLUS V4.08 Nov 8, 2022" 		 // Current Version String Revision.
 
 //#define	 MAX_MULT_FREQ  195000000		// Highest Frequency is 195000000MHz
 //#define	 DEF_HIGH_FREQ	180000000		// Default High Frequency.
@@ -653,10 +653,15 @@ extern const struct user_macro 	macro1_data;
 //  #define	 BAT_MEDLOW			620			// Battery Medium Low >6.1V.
 //  #define	 BAT_LOW			530			// Battery Low >5.4V.
 //** MarkIII Battery Constants
-  #define	 BAT_HIGH			152		// Battery High >7.8V.
-  #define	 BAT_MEDIUM			148			// Battery Medium >7.0V.
-  #define	 BAT_MEDLOW			136			// Battery Medium Low >6.1V.
-  #define	 BAT_LOW			132			// Battery Low >5.4V.
+//  #define	 BAT_HIGH			152			// Battery High >7.8V.
+//  #define	 BAT_MEDIUM			148			// Battery Medium >7.0V.
+//  #define	 BAT_MEDLOW			136			// Battery Medium Low >6.1V.
+//  #define	 BAT_LOW			132			// Battery Low >5.4V.
+//** MarkIII Battery Constants...TEST 11/7/2022...Magic Fail Point is 125...
+  #define	 BAT_HIGH			152			// Battery High >7.8V.
+  #define	 BAT_MEDIUM			136			// Battery Medium >7.0V.
+  #define	 BAT_MEDLOW			120			// Battery Medium Low >6.1V.
+  #define	 BAT_LOW			104			// Battery Low >5.4V.
 
 //*****************************************************************************
 //*

@@ -17,7 +17,7 @@
 -include="C:\Software3\PLMPLS_41\App"
 -include="C:\Software3\PLMPLS_41\USBStack"
 -include="C:\Software3\PLMPLS_41\USBStack\MSC" 
--define=STRM_COM,CLW,__RX,DEBUGGR,MONITOR_APP_EN=1,PLM_HARDWARE,DDFB,STRM_NO,COSMAN
+-define=STRM_COM,CLW,__RX,DEBUGGR,MONITOR_APP_EN=1,PLM_HARDWARE,DDFB,STRM_NO
 -lang=c99
 -nomessage
 -output=obj

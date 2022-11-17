@@ -1386,12 +1386,12 @@ char *Battery_Level(void)
 #endif
 
   // 4. Filter and adjust value.
-  if (result <= 120)
+  if (result <= 104)
 	  result = 0;
-  else if (result >=160)
+  else if (result >=155)
 	  result = 100;
   else
-	  result = (result - 120) * 2.5;
+	  result = (result - 125) * 3.3;
 
   // 4a. Build String.
   sprintf(tempstr, "%3d", result);
@@ -1409,9 +1409,11 @@ char *Battery_Level(void)
 //* the current state of the battery.
 //*
 //*****************************************************************************
+#define BAT_TRIP_LIMIT	50				// Maximum number of Occurrences before Battery Fail.
 char *Battery_Test(void)
 {
   static char tempstr[4];
+  static uint16_t BatTrip_Cnt = 0;
   uint16_t result;
 
   // 1. Start A/D Channel
@@ -1430,18 +1432,32 @@ char *Battery_Test(void)
 #endif
 
   // 4. Test result and return correct string.
-  if (result > BAT_HIGH)
-    strcpy(tempstr, "***");
-  else if (result > BAT_MEDIUM)
-    strcpy(tempstr, "**_");
-  else if (result > BAT_MEDLOW)
-    strcpy(tempstr, "*__");
-  else if (result > BAT_LOW)
-    strcpy(tempstr, "___");
-  else {
-    mode = LOW_BAT;
-	strcpy(tempstr, "___");
-  }
+	if (result > BAT_HIGH) {
+		strcpy(tempstr, "***");
+		BatTrip_Cnt = 0;
+	}
+	else if (result > BAT_MEDIUM) {
+		strcpy(tempstr, "**_");
+		BatTrip_Cnt = 0;
+	}
+	else if (result > BAT_MEDLOW) {
+		strcpy(tempstr, "*__");
+		BatTrip_Cnt = 0;
+	}
+	else if (result > BAT_LOW) {
+		strcpy(tempstr, "___");
+		BatTrip_Cnt = 0;
+	}
+	else {
+		monPrint("WARN", "Battery Low.");		// Battery Trip on Low side
+		BatTrip_Cnt++;
+		if (BatTrip_Cnt >= BAT_TRIP_LIMIT)
+		{
+			monPrint("ERROR", "BATTERY FAIL. POWER DOWN.");	// Multiple Trip Points...FAIL
+			mode = LOW_BAT;
+			strcpy(tempstr, "___");
+		}
+	}
   return(tempstr);
 }
 

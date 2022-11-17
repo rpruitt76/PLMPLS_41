@@ -407,7 +407,7 @@ void main_plm(void)
     printf2("PLM Monitor Starting... \n\n");
     printf2("***************************************************************\n");
     printf2("PLM PLUS OS Version 4.08\n");
-    printf2("Copyright: Oct 4, 2022\n");
+    printf2("Copyright: Nov 8, 2022\n");
     printf2("Property of Cold Laser Therapeutics, LLC\n");
     printf2("***************************************************************\n\n\n");
 
