@@ -2831,6 +2831,7 @@ void save_vars(void)
 
 	// Write Lease/Demo Vars
 	EEPROM_WRITE((uint32_t)&opMode, (uint32_t)&eopMode, sizeof(opMode));	 			// Write opMode to Flash.
+	EEPROM_WRITE((uint32_t)&lockCode, (uint32_t)&elockCode, sizeof(lockCode));	 		// Write lockCode to Flash.
 	EEPROM_WRITE((uint32_t)&leaseDays, (uint32_t)&eleaseDays, sizeof(leaseDays));	 	// Write leaseDays to Flash.
 	EEPROM_WRITE((uint32_t)&leaseDay, (uint32_t)&eleaseDay, sizeof(leaseDay));	 		// Write leaseDay to Flash.
 	EEPROM_WRITE((uint32_t)&leaseMnth, (uint32_t)&eleaseMnth, sizeof(leaseMnth));	 	// Write leaseMnth to Flash.
@@ -2912,6 +2913,7 @@ void restore_vars(void)
 
 	// Read Lease/Demo Vars
 	opMode = eopMode;					 			// Write opMode to Flash.
+	lockCode = elockCode;					 		// Read lockCode from Flash.
 	leaseDays = eleaseDays;						 	// Write leaseDays to Flash.
 	leaseDay = eleaseDay;					 		// Write leaseDay to Flash.
 	leaseMnth = eleaseMnth;						 	// Write leaseMnth to Flash.
@@ -3624,6 +3626,15 @@ void Miscmonitor( char* parm1)
 		sprintf(tempstr,"Mode: %02d\n", opMode);
 		printf2(tempstr);
 	}
+	else if( strcmp(parm1, "lockCode") == 0)
+	{
+		printf2("*****************************************\n");
+		if ( TstUnLockCode() )
+			sprintf(tempstr,"lockCode: UNLOCKED\n");
+		else
+			sprintf(tempstr,"lockCode: LOCKED\n");
+		printf2(tempstr);
+	}
 	else if( strcmp(parm1, "LDay") == 0)
 	{
 		printf2("*****************************************\n");
@@ -3910,6 +3921,79 @@ void SetModeMonitor( char* parm1)
 	}
 
 	printf2("\n\n");
+}
+
+/*****************************************************************************
+ *
+ * routine: SetUnLockCode
+ * Date: 	November 12, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine sets the correct Unlock code for the firmware load.
+ *
+ * INPUT:
+ *  @param	None
+ *
+ * OUTPUT:
+ * 	@retval None
+ *
+ *****************************************************************************/
+#define	UNLOCK_CD	0x5A5A		// Special Unlock Code
+void SetUnLockCode( void )
+{
+	// Set lockCode
+	lockCode = UNLOCK_CD;
+
+	// Save new value to Data Flash.
+	EEPROM_WRITE((uint32_t)&lockCode, (uint32_t)&elockCode, sizeof(lockCode));	 		 // Write the data to EEPROM.
+}
+
+/*****************************************************************************
+ *
+ * routine: TstLockCode
+ * Date: 	November 12, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine returns the status of the kay var lockCode
+ *
+ * INPUT:
+ *  @param	None
+ *
+ * OUTPUT:
+ * 	@retval Laser Active Status	-	True         = 0x01:	Code is Unlocked
+ * 									False        = 0x00:	Code is locked
+ *
+ *****************************************************************************/
+bool TstUnLockCode( void )
+{
+	if (lockCode == UNLOCK_CD)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/*****************************************************************************
+ *
+ * routine: ClrUnLockCode
+ * Date: 	November 12, 2022
+ * Updated: ---
+ * Author:  Ralph Pruitt
+ * @brief	This routine clear the Unlock code for the firmware load.
+ *
+ * INPUT:
+ *  @param	None
+ *
+ * OUTPUT:
+ * 	@retval None
+ *
+ *****************************************************************************/
+void ClrUnLockCode( void )
+{
+	// Set lockCode
+	lockCode = 0;
+
+	// Save new value to Data Flash.
+	EEPROM_WRITE((uint32_t)&lockCode, (uint32_t)&elockCode, sizeof(lockCode));	 		 // Write the data to EEPROM.
 }
 
 void SetLDayMonitor( char* parm1)

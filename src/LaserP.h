@@ -401,6 +401,9 @@ extern bool tst_laser_active( void );
 extern void Wr_MacAddrmonitor( char* parm1);
 extern void Rd_MacAddrmonitor( char* parm1);
 extern void ParseTemperature( char* parm1);
+extern void SetUnLockCode( void );
+extern bool TstUnLockCode( void );
+extern void ClrUnLockCode( void );
 
 #ifdef TST_PATCH
 extern unsigned char MonitorParse(void);
