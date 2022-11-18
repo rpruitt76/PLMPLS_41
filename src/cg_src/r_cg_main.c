@@ -410,7 +410,7 @@ void main_plm(void)
     printf2("PLM Monitor Starting... \n\n");
     printf2("***************************************************************\n");
     printf2("PLM PLUS OS Version 5.00\n");
-    printf2("Copyright: Nov 17, 2022\n");
+    printf2("Copyright: Nov 18, 2022\n");
     printf2("Property of Cold Laser Therapeutics, LLC\n");
     printf2("***************************************************************\n\n\n");
 
@@ -1083,140 +1083,144 @@ void main_plm(void)
 		} // End If two_min_test active
 		break;
 
-		//*******************************************************************************//*
-		//*   TGPBFEntryScreen
-		//*
-		//*   TODO: PBFEntryScreen
-		//*******************************************************************************
-			case TGPBFEntryScreen:							// Show Alternate PBF Screen.
-				if (once == 0) {
+//*******************************************************************************
+//*
+//*   TGPBFEntryScreen
+//*
+//*   TODO: PBFEntryScreen
+//*******************************************************************************
+		case TGPBFEntryScreen:					// Show Alternate PBF Screen.
+			if (once == 0) {
+				nobeep_flg = 1;					    // Turn On Beep.
+				tg_Err_Cd = 0;						// Clear Error Code.
+				strcpy(tglease_str, "              ");// Copy a Blank string to tglease_str.
+				tgPBFEntryScrn();				// Display TG PBF Entry Screen.
+				if (Timeout_active())
+					Timout_start();					// TimeOut Timer Start.
+				once = 1;								// Set Once Flag.
+				laser_hold = 0;						// Clear laser_hold var.
+				beep_3Bp();							// Beep Start Screen
+			}
+			if (((Timeout_test() == 0) && Timeout_active())
+					|| (mode == LOW_BAT)) {
+				nobeep_flg = 1;					    // Turn On Beep.
+				if (mode == LOW_BAT)
+					mode = Low_PD;	  	// We are now in true Low Power Mode..
+				else
+					mode = Soft_PD; 	  				// Set Mode to Soft_PD.
+				once = 0;								// Reset once flag.
+			} // End If Test two_min_test Failed
+			else {
+				key_var = scan_keyboard();			// Scan Keyboard.
+				if (key_var == 0) {
+					laser_hold = 1;	// Set laser_hold only if Laser key released.
 					nobeep_flg = 1;					    // Turn On Beep.
-					tg_Err_Cd = 0;						// Clear Error Code.
-		            strcpy(tglease_str, "              ");			// Copy a Blank string to tglease_str.
-		            tgPBFEntryScrn();					// Display TG PBF Entry Screen.
-					if(Timeout_active())
-						Timout_start();					// TimeOut Timer Start.
-					once = 1;								// Set Once Flag.
-					laser_hold = 0;						// Clear laser_hold var.
-					beep_3Bp();							// Beep Start Screen
 				}
-				if (((Timeout_test() == 0) && Timeout_active()) ||
-						(mode == LOW_BAT)) {
-					nobeep_flg = 1;					    // Turn On Beep.
-					if (mode == LOW_BAT)
-						mode = Low_PD;	  				    // We are now in true Low Power Mode..
-					else
-						mode = Soft_PD; 	  				// Set Mode to Soft_PD.
-					once = 0;								// Reset once flag.
-				} // End If Test two_min_test Failed
-				else {
-					key_var = scan_keyboard();			// Scan Keyboard.
-					if (key_var == 0){
-						laser_hold = 1;						// Set laser_hold only if Laser key released.
-						nobeep_flg = 1;					    // Turn On Beep.
-					}
-					if((key_var > 0) && (laser_hold == 1)) {
-						laser_hold = 0; 			  	    // Only one Keypress is legal.
-						nobeep_flg = 0;					    // Turn Off Beep Till mode determined.
-						switch (key_var) {
-						  case BACK:
-							Backspace_Char(tglease_str, TG_LEASE_STR_LEN);
-							tglease_str[TG_LEASE_STR_LEN-1] = NULL;
-							break;
+				if ((key_var > 0) && (laser_hold == 1)) {
+					laser_hold = 0; 			  // Only one Keypress is legal.
+					nobeep_flg = 0;		// Turn Off Beep Till mode determined.
+					switch (key_var) {
+					case BACK:
+						Backspace_Char(tglease_str, TG_LEASE_STR_LEN);
+						tglease_str[TG_LEASE_STR_LEN - 1] = NULL;
+						break;
 
-						  case ZERO:
-						  case ONE:
-						  case TWO:
-						  case THREE:
-						  case FOUR:
-						  case FIVE:
-						  case SIX:
-						  case SEVEN:
-						  case EIGHT:
-						  case NINE:
-							  char1 = get_numstr(key_var);		// Get New Digit.
-							  shft_str_left(tglease_str , TG_LEASE_STR_LEN);		// Shift String Left by one digit.
-							  tglease_str[TG_LEASE_STR_LEN-2] = char1[0];
-							  tglease_str[TG_LEASE_STR_LEN-1] = NULL;
-							  break;
+					case ZERO:
+					case ONE:
+					case TWO:
+					case THREE:
+					case FOUR:
+					case FIVE:
+					case SIX:
+					case SEVEN:
+					case EIGHT:
+					case NINE:
+						char1 = get_numstr(key_var);		// Get New Digit.
+						shft_str_left(tglease_str, TG_LEASE_STR_LEN);// Shift String Left by one digit.
+						tglease_str[TG_LEASE_STR_LEN - 2] = char1[0];
+						tglease_str[TG_LEASE_STR_LEN - 1] = NULL;
+						break;
 
-						  case SELECT:
-							  // Time to validate if passed cde is good.
-							  if (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
-							  {
-								  // Test FW Base Var and Validate this is the correct code base.
-								  if ( tmp_fw_version == FW_CODE_BASE )
-								  {
-									  // Validate lease Days and tmpMode
-									  if((tmpleaseDays<=90) && (tmpleaseDays>=0))
-									  {
-										  if((tmpMode<=3) && (tmpMode>=0))
-										  {
-											  // Unlock Code so that it will Now run...
-											  SetUnLockCode();
-											  // We have a good Code. Change modes and Lease Days.
-											  opMode = tmpMode;
-											  //mapMode = tmpMapMode;
-											  leaseDays = tmpleaseDays;
-											  getDate(&leaseMnth, &leaseDay, &leaseYear);
-											  // Write new values to Data Flash.
-											  EEPROM_WRITE((uint32_t)&opMode, (uint32_t)&eopMode, sizeof(opMode));	 			// Write opMode to Flash.
-											  //EEPROM_WRITE((uint32_t)&mapMode, (uint32_t)&emapMode, sizeof(mapMode));	 		// Write mapMode to Flash.
-											  EEPROM_WRITE((uint32_t)&leaseDays, (uint32_t)&eleaseDays, sizeof(leaseDays));	 	// Write leaseDays to Flash.
-											  EEPROM_WRITE((uint32_t)&leaseDay, (uint32_t)&eleaseDay, sizeof(leaseDay));	 	// Write leaseDay to Flash.
-											  EEPROM_WRITE((uint32_t)&leaseMnth, (uint32_t)&eleaseMnth, sizeof(leaseMnth));	 	// Write leaseMnth to Flash.
-											  EEPROM_WRITE((uint32_t)&leaseYear, (uint32_t)&eleaseYear, sizeof(leaseYear));	 	// Write leaseYear to Flash.
-											  WDR(); //this prevents a timout on enabling
+					case SELECT:
+						// Time to validate if passed cde is good.
+						if (decode_14PBFcode(tglease_str, &tmpleaseDays,
+								&tmpMode, &tmpMapMode, &tmp_fw_version)) {
+							// Test FW Base Var and Validate this is the correct code base.
+							if (tmp_fw_version == FW_CODE_BASE) {
+								// Validate lease Days and tmpMode
+								if ((tmpleaseDays <= 90)
+										&& (tmpleaseDays >= 0)) {
+									if ((tmpMode <= 3) && (tmpMode >= 0)) {
+										// Unlock Code so that it will Now run...
+										SetUnLockCode();
+										// We have a good Code. Change modes and Lease Days.
+										opMode = tmpMode;
+										//mapMode = tmpMapMode;
+										leaseDays = tmpleaseDays;
+										getDate(&leaseMnth, &leaseDay,
+												&leaseYear);
+										// Write new values to Data Flash.
+										EEPROM_WRITE((uint32_t) &opMode,
+												(uint32_t) &eopMode,
+												sizeof(opMode));// Write opMode to Flash.
+										//EEPROM_WRITE((uint32_t)&mapMode, (uint32_t)&emapMode, sizeof(mapMode));	 		// Write mapMode to Flash.
+										EEPROM_WRITE((uint32_t) &leaseDays,
+												(uint32_t) &eleaseDays,
+												sizeof(leaseDays));	// Write leaseDays to Flash.
+										EEPROM_WRITE((uint32_t) &leaseDay,
+												(uint32_t) &eleaseDay,
+												sizeof(leaseDay));// Write leaseDay to Flash.
+										EEPROM_WRITE((uint32_t) &leaseMnth,
+												(uint32_t) &eleaseMnth,
+												sizeof(leaseMnth));	// Write leaseMnth to Flash.
+										EEPROM_WRITE((uint32_t) &leaseYear,
+												(uint32_t) &eleaseYear,
+												sizeof(leaseYear));	// Write leaseYear to Flash.
+										WDR(); //this prevents a timout on enabling
 
-											  // Set Mode to Correct Mode
-											  mode = Main; 	  					// Set Mode to Main.
-											  once = 0;								// Reset once flag.
-										  } // Endif ((tmpMode<=3) && (tmpMode>=0))
-										  else
-										  {
-											  // We have a bad code need to change mode to enter code again.
-											  tg_Err_Cd = 0;						// Indicate that Entered code is bad.
-											  mode = TGPBFErrorScreen; 	  					// Set Mode to Main.
-											  once = 0;								// Reset once flag.
-										  } // Endelse ((tmpMode<=3) && (tmpMode>=0))
-									  } // Endif ((tmpleaseDays<=90) && (tmpleaseDays>=0))
-									  else
-									  {
-										  // We have a bad code need to change mode to enter code again.
-										  tg_Err_Cd = 0;						// Indicate that Entered code is bad.
-										  mode = TGPBFErrorScreen; 	  					// Set Mode to Main.
-										  once = 0;								// Reset once flag.
-									  } // Endelse ((tmpleaseDays<=90) && (tmpleaseDays>=0))
-								  } // Endif ( tmp_fw_version == FW_CODE_BASE )
-								  else
-								  {
-									  // We have a bad code need to change mode to enter code again.
-									  tg_Err_Cd = 2;						// Indicate that Code Base is wrong.
-									  mode = TGPBFErrorScreen; 	  					// Set Mode to Main.
-									  once = 0;								// Reset once flag.
-								  } // Endelse ( tmp_fw_version == FW_CODE_BASE )
-							  } // Endif (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
-							  else
-							  {
-								  // We have a bad code need to change mode to enter code again.
-								  tg_Err_Cd = 0;						// Indicate that Entered code is bad.
-								  mode = TGPBFErrorScreen; 	  					// Set Mode to Main.
-								  once = 0;								// Reset once flag.
-							  } // Endelse (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
-							  break;
-						} // End Switch on key_var
-			            tgPBFEntryScrn();					// Display TG PBF Entry Screen.
+										// Set Mode to Correct Mode
+										mode = Main; 	  	// Set Mode to Main.
+										once = 0;			// Reset once flag.
+									} // Endif ((tmpMode<=3) && (tmpMode>=0))
+									else {
+										// We have a bad code need to change mode to enter code again.
+										tg_Err_Cd = 0;// Indicate that Entered code is bad.
+										mode = TGPBFErrorScreen; // Set Mode to Main.
+										once = 0;			// Reset once flag.
+									} // Endelse ((tmpMode<=3) && (tmpMode>=0))
+								} // Endif ((tmpleaseDays<=90) && (tmpleaseDays>=0))
+								else {
+									// We have a bad code need to change mode to enter code again.
+									tg_Err_Cd = 0;// Indicate that Entered code is bad.
+									mode = TGPBFErrorScreen; // Set Mode to Main.
+									once = 0;				// Reset once flag.
+								} // Endelse ((tmpleaseDays<=90) && (tmpleaseDays>=0))
+							} // Endif ( tmp_fw_version == FW_CODE_BASE )
+							else {
+								// We have a bad code need to change mode to enter code again.
+								tg_Err_Cd = 2;// Indicate that Code Base is wrong.
+								mode = TGPBFErrorScreen; 	// Set Mode to Main.
+								once = 0;					// Reset once flag.
+							} // Endelse ( tmp_fw_version == FW_CODE_BASE )
+						} // Endif (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
+						else {
+							// We have a bad code need to change mode to enter code again.
+							tg_Err_Cd = 0;// Indicate that Entered code is bad.
+							mode = TGPBFErrorScreen; 	  	// Set Mode to Main.
+							once = 0;						// Reset once flag.
+						} // Endelse (decode_14PBFcode( tglease_str, &tmpleaseDays, &tmpMode, &tmpMapMode, &tmp_fw_version))
+						break;
+					} // End Switch on key_var
+					tgPBFEntryScrn();			// Display TG PBF Entry Screen.
 
-						if (mode != TGPBFEntryScreen) {
-							once = 0;							// Reset once flag.
-							Timeout_clear();				   // Clear 5 MInute Timer.
-						}
-						else
-							if(Timeout_active())
-								Timout_start();					// TimeOut Timer Start.
-					} //Endif Key Founr
-				} // End If Timeout_test active
-				break;
+					if (mode != TGPBFEntryScreen) {
+						once = 0;							// Reset once flag.
+						Timeout_clear();				// Clear 5 MInute Timer.
+					} else if (Timeout_active())
+						Timout_start();					// TimeOut Timer Start.
+				} //Endif Key Founr
+			} // End If Timeout_test active
+			break;
 
 //*******************************************************************************
 //*
@@ -1225,6 +1229,7 @@ void main_plm(void)
 //*	  PBFErrorScreen
 //*******************************************************************************
 	case PBFErrorScreen:						// PBFErrorScreen.
+	case TGPBFErrorScreen:						// PBFErrorScreen.
 		if (once == 0) {
 			nobeep_flg = 1;					    // Turn On Beep.
 			if ( mode == TGPBFErrorScreen )

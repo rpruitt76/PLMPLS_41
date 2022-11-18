@@ -98,8 +98,8 @@
                                      // Comment it out for a Mark III Load.
 // Mark III Version Numbers and Dates...Release 3.3
 #define	 VERSIONNUM		"5.00" 		 // Current Version Revision.(4 CHARS)
-#define  RELDATE		"11/17/22"	 // Current Release Date.(8 Chars)
-#define	 VERSIONSTR		"PLM PLUS V5.00 Nov 17, 2022" 		 // Current Version String Revision.
+#define  RELDATE		"11/18/22"	 // Current Release Date.(8 Chars)
+#define	 VERSIONSTR		"PLM PLUS V5.00 Nov 18, 2022" 		 // Current Version String Revision.
 #define	 FW_CODE_BASE	2			// 2:	PLM Ultimate Baseline		Nov 17, 2022
 
 //#define	 MAX_MULT_FREQ  195000000		// Highest Frequency is 195000000MHz
@@ -324,6 +324,7 @@ extern void SerialNumScrn(void);
 extern void MonitorScrn(void);
 extern void TimeScrn(void);
 extern void PBFEntryScrn(void);
+extern void tgPBFEntryScrn(void);
 extern void PBFErrorScrn(int code);
 extern void WDR( void );
 extern void CLI( void );
