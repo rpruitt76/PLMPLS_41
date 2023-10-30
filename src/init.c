@@ -336,7 +336,7 @@ void init_devices(void)
 		R_MTU3_AllLasers_Off();
 
 		// Power-up Key power-supplies.
-		power_up1();
+		//power_up1();
 
 		// DeAssert Lasers FPGA...
 		//TODO: Un-comment below when Laser Code is added.
