@@ -670,11 +670,16 @@ extern const struct user_macro 	macro1_data;
 //  #define	 BAT_MEDIUM			148			// Battery Medium >7.0V.
 //  #define	 BAT_MEDLOW			136			// Battery Medium Low >6.1V.
 //  #define	 BAT_LOW			132			// Battery Low >5.4V.
-//** MarkIII Battery Constants...TEST 11/7/2022...Magic Fail Point is 125...
-  #define	 BAT_HIGH			152			// Battery High >7.8V.
-  #define	 BAT_MEDIUM			136			// Battery Medium >7.0V.
-  #define	 BAT_MEDLOW			120			// Battery Medium Low >6.1V.
-  #define	 BAT_LOW			104			// Battery Low >5.4V.
+//** PLM Ultimate Battery Constants...OLD...10/30/2023
+//  #define	 BAT_HIGH			152			// Battery High >7.8V.
+//  #define	 BAT_MEDIUM			136			// Battery Medium >7.0V.
+//  #define	 BAT_MEDLOW			120			// Battery Medium Low >6.1V.
+//  #define	 BAT_LOW			104			// Battery Low >5.4V.
+//** PLM Ultimate Battery Constants...NEW 10/30/2023
+  #define	 BAT_HIGH			155			// Battery High 		>4.0V.
+  #define	 BAT_MEDIUM			131			// Battery Medium 		>3.5V.
+  #define	 BAT_MEDLOW			127			// Battery Medium Low 	>3.3V.
+  #define	 BAT_LOW			118			// Battery Low 			>3.1V.
 
 //*****************************************************************************
 //*
