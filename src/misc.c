@@ -1365,6 +1365,7 @@ void EEPROM_READ(uchar *src_address, uchar *dest_address, uint32_t num_bytes)
 //* >165		=   100
 //*
 //*****************************************************************************
+#define LASER_ADJUST	10		// Adjust for load of Laser event.
 char *Battery_Level(void)
 {
   static char tempstr[4];
@@ -1381,6 +1382,14 @@ char *Battery_Level(void)
 
   // 3. Power Down ADC.
   R_S12AD0_Stop();
+
+  // 3a. If this is an active Laser Event(ADD LASER_ADJUST value).
+  if (laser_flg)
+	  result += LASER_ADJUST;
+
+  // 3b. Average Values
+  result = Battery_Avg(result);
+
 #ifdef TST_PATCH
 //  result = BAT_HIGH+10;
 #endif
@@ -1477,6 +1486,14 @@ char *Battery_Test(void)
 
   // 3. Power Down ADC.
   R_S12AD0_Stop();
+
+  // 3a. If this is an active Laser Event(ADD LASER_ADJUST value).
+  if (laser_flg)
+	  result += LASER_ADJUST;
+
+  // 3b. Average Values
+  result = Battery_Avg(result);
+
 #ifdef TST_PATCH
 //  result = BAT_HIGH+10;
 #endif
