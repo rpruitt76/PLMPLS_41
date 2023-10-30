@@ -187,6 +187,19 @@ void R_MAIN_UserInit(void)
 	int x;
 	char tmpString[80];
 
+//#if 0
+	// Restore mode.
+  	mode = emode;
+
+  	// Power-up Key power-supplies if
+	if ((mode != Low_PD) &&
+		(mode != Soft_PD) &&
+		(mode != Locked))
+	{
+		power_up1();
+	}
+//#endif
+
 	/*
 	 * Add call to gpio Init Driver for tracked GPIOs...11/27/2020...RP
 	 */
