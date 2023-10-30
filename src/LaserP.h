@@ -215,6 +215,7 @@ extern void five_min_start(void);			   // Start or re-start 2 Minute Timer.
 extern unsigned char five_min_test(void);	   // Test Two Minute Timer.
 extern void five_min_clear(void);			   // Clear Two Minute Timer.
 extern void sleep_code(void);				   // Force code into low-power Sleep.
+extern uint16_t Battery_Avg(uint16_t ResValue);	// Average all Battery Measurements.
 extern char *Battery_Level(void);			   // Use ADC to measure Battery.
 extern char *Battery_Test(void);  			   // Use ADC to measure Battery.
 extern void shft_str_left(char *, unsigned char);

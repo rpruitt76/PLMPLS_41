@@ -1399,6 +1399,56 @@ char *Battery_Level(void)
   return(tempstr);
 }
 
+/*****************************************************************************
+*
+* routine: Battery_Avg
+* Date:    October 4, 2023
+* Updated: ---
+* Author:  Ralph Pruitt
+* This routine takes the value passed and averages based on the depth of the Average
+* array. This is to ensure we are filtering any spurious values from the Battery
+* measurements
+* the current state of the battery.
+*
+*****************************************************************************/
+#define	BAT_AVG_SIZE	20		// Size of Avg Battery array
+#define BAT_INIT_VAL	138		// Value for 3.6V
+uint16_t Battery_Avg(uint16_t ResValue)
+{
+  static uint16_t Bat_Array[BAT_AVG_SIZE];
+  uint16_t temp_result;
+  static bool OnceExec = true;
+  //static int BatArray_Sz = 0;
+  static int BatArray_ptr = 0;
+  int x;
+
+  // Test Once Flag
+  if (OnceExec)
+  {
+	  OnceExec = false;		// Clear Flag
+	  // Clear Array.
+	  for (x=0; x<BAT_AVG_SIZE; x++)
+		  Bat_Array[x] = ResValue;
+		  //Bat_Array[x] = BAT_INIT_VAL;
+  } // EndIf (OnceExec)
+
+  // Place Entry into array.
+  Bat_Array[BatArray_ptr++] = ResValue;
+  //if (BatArray_Sz < BAT_AVG_SIZE)
+  //	  BatArray_Sz++;
+
+  // Update Pointer
+  if (BatArray_ptr >= BAT_AVG_SIZE)
+	  BatArray_ptr = 0;
+  // Now Calculate total Count
+  temp_result =0;
+  for (x=0; x<BAT_AVG_SIZE; x++)
+	  temp_result += Bat_Array[x];
+  temp_result = temp_result/BAT_AVG_SIZE;
+  // Return Result.
+  return(temp_result);
+}
+
 //*****************************************************************************
 //*
 //* routine: Battery_Test
